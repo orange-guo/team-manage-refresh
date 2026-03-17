@@ -40,6 +40,14 @@ team_service = TeamService()
 redemption_service = RedemptionService()
 
 
+async def resolve_ui_theme(db: AsyncSession) -> str:
+    """获取当前系统 UI 主题。"""
+    return settings_service.normalize_ui_theme(
+        await settings_service.get_setting(db, "ui_theme", DEFAULT_UI_THEME)
+    )
+
+
+
 # 请求模型
 class TeamImportRequest(BaseModel):
     """Team 导入请求"""
@@ -160,6 +168,7 @@ async def admin_dashboard(
                 "request": request,
                 "user": current_user,
                 "active_page": "dashboard",
+                "ui_theme": await resolve_ui_theme(db),
                 "teams": teams_result.get("teams", []),
                 "stats": stats,
                 "search": search,
@@ -242,6 +251,7 @@ async def welfare_dashboard(
                 "request": request,
                 "user": current_user,
                 "active_page": "welfare",
+                "ui_theme": await resolve_ui_theme(db),
                 "teams": teams_result.get("teams", []),
                 "stats": stats,
                 "search": search,
@@ -1042,6 +1052,7 @@ async def codes_list_page(
                 "request": request,
                 "user": current_user,
                 "active_page": "codes",
+                "ui_theme": await resolve_ui_theme(db),
                 "codes": codes,
                 "stats": stats,
                 "search": search,
@@ -1501,6 +1512,7 @@ async def records_page(
                 "request": request,
                 "user": current_user,
                 "active_page": "records",
+                "ui_theme": await resolve_ui_theme(db),
                 "records": paginated_records,
                 "stats": stats,
                 "filters": {
@@ -1600,6 +1612,7 @@ async def settings_page(
                 "request": request,
                 "user": current_user,
                 "active_page": "settings",
+                "ui_theme": await resolve_ui_theme(db),
                 "proxy_enabled": proxy_config["enabled"],
                 "proxy": proxy_config["proxy"],
                 "log_level": log_level,
@@ -1745,6 +1758,7 @@ async def announcement_page(
                 "request": request,
                 "user": current_user,
                 "active_page": "announcement",
+                "ui_theme": await resolve_ui_theme(db),
                 "announcement_enabled": announcement_enabled,
                 "announcement_markdown": announcement_markdown,
             }

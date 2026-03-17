@@ -21,13 +21,13 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="/static/css/style.css?v=20260317-theme-flicker-fix-1">
+    <link rel="stylesheet" href="/static/css/style.css?v=20260317-theme-flicker-fix-2">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="bg-gray-50 text-slate-900{% if user %} admin-theme{% endif %}" data-pool-type="{% if active_page == 'welfare' %}welfare{% else %}normal{% endif %}" data-ui-theme="{{ ui_theme|default('ocean') }}">
+<body class="bg-gray-50 text-slate-900{% if user %} admin-theme theme-{{ ui_theme|default('ocean') }}{% endif %}" data-pool-type="{% if active_page == 'welfare' %}welfare{% else %}normal{% endif %}" data-ui-theme="{{ ui_theme|default('ocean') }}">
     {% if user %}
     <!-- 导航栏 -->
     <nav class="navbar">
@@ -415,7 +415,7 @@
     <div id="toast" class="toast"></div>
 
     <script>window.SYSTEM_UI_THEME = {{ ui_theme|default("ocean")|tojson }};</script>
-    <script src="/static/js/main.js?v=20260317-theme-flicker-fix-1"></script>
+    <script src="/static/js/main.js?v=20260317-theme-flicker-fix-2"></script>
     <script>
         lucide.createIcons();
     </script>
