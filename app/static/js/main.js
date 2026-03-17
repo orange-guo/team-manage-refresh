@@ -41,50 +41,45 @@ async function saveSystemTheme(theme) {
     return data.theme || theme;
 }
 
+function updateThemeToggleButton(theme) {
+    const openBtn = document.getElementById('openThemeSwitcherBtn');
+    if (!openBtn) return;
+    const targetLabel = theme === 'warm' ? '暖色' : '深色';
+    openBtn.innerHTML = `<i data-lucide="palette" style="width: 15px; height: 15px;"></i> ${targetLabel}`;
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
 async function initThemeSwitcher() {
     const isAdmin = !!document.body?.classList.contains('admin-theme');
     applySystemTheme(getCurrentSystemTheme());
 
-    if (isAdmin) {
-        try {
-            const response = await fetch('/admin/settings/ui-theme');
-            const data = await response.json();
-            if (response.ok && data.success) {
-                applySystemTheme(data.theme);
-            }
-        } catch (error) {
-            console.error('load ui theme failed:', error);
-        }
-    }
-
     if (!isAdmin) return;
 
+    try {
+        const response = await fetch('/admin/settings/ui-theme');
+        const data = await response.json();
+        if (response.ok && data.success) {
+            applySystemTheme(data.theme);
+        }
+    } catch (error) {
+        console.error('load ui theme failed:', error);
+    }
+
+    updateThemeToggleButton(getCurrentSystemTheme());
+
     const openBtn = document.getElementById('openThemeSwitcherBtn');
-    const saveBtn = document.getElementById('saveThemeBtn');
-    const modal = document.getElementById('themeSwitcherModal');
-    const options = Array.from(document.querySelectorAll('input[name="themeOption"]'));
+    if (!openBtn) return;
 
-    if (!openBtn || !saveBtn || !modal || options.length === 0) return;
-
-    const syncSelected = () => {
+    openBtn.addEventListener('click', async () => {
         const current = getCurrentSystemTheme();
-        options.forEach((option) => {
-            option.checked = option.value === current;
-        });
-    };
-
-    openBtn.addEventListener('click', () => {
-        syncSelected();
-        showModal('themeSwitcherModal');
-    });
-
-    saveBtn.addEventListener('click', async () => {
-        const selected = options.find((option) => option.checked)?.value || 'ocean';
+        const nextTheme = current === 'warm' ? 'ocean' : 'warm';
         try {
-            const savedTheme = await saveSystemTheme(selected);
+            const savedTheme = await saveSystemTheme(nextTheme);
             applySystemTheme(savedTheme);
-            showToast('系统配色已保存', 'success');
-            hideModal('themeSwitcherModal');
+            updateThemeToggleButton(savedTheme);
+            showToast(`已切换为${savedTheme === 'warm' ? '暖色' : '深色'}主题`, 'success');
         } catch (error) {
             showToast(error.message || '保存失败', 'error');
         }
