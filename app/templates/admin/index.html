@@ -70,13 +70,13 @@
         <div class="header-group">
             <!-- 批量操作 -->
             <div id="batchActions" class="batch-actions-group" style="display: none;">
-                <button onclick="handleBatchRefresh()" class="btn btn-secondary btn-sm">
+                <button type="button" id="btnBatchRefresh" class="btn btn-secondary btn-sm">
                     <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> 批量刷新
                 </button>
-                <button onclick="handleBatchEnableDeviceAuth()" class="btn btn-success btn-sm">
+                <button type="button" id="btnBatchEnableDeviceAuth" class="btn btn-success btn-sm">
                     <i data-lucide="shield-check" style="width: 14px; height: 14px;"></i> 批量开启验证
                 </button>
-                <button onclick="handleBatchDelete()" class="btn btn-danger btn-sm">
+                <button type="button" id="btnBatchDelete" class="btn btn-danger btn-sm">
                     <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> 批量删除
                 </button>
                 <span class="selected-count text-muted small" style="margin-left: 8px;">已选 0 项</span>
@@ -490,6 +490,19 @@
                 enableDeviceAuth(id);
             });
         });
+
+        // 绑定复选框事件（避免仅依赖内联 onchange）
+        document.getElementById('selectAll')?.addEventListener('change', (e) => {
+            toggleSelectAll(Boolean(e.target && e.target.checked));
+        });
+        document.querySelectorAll('.team-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateSelectedCount);
+        });
+
+        // 绑定批量操作按钮（避免依赖内联 onclick，兼容更严格的 CSP）
+        document.getElementById('btnBatchRefresh')?.addEventListener('click', handleBatchRefresh);
+        document.getElementById('btnBatchEnableDeviceAuth')?.addEventListener('click', handleBatchEnableDeviceAuth);
+        document.getElementById('btnBatchDelete')?.addEventListener('click', handleBatchDelete);
     });
 
     async function enableDeviceAuth(teamId) {
