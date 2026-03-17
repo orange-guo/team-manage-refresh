@@ -266,6 +266,7 @@ body.admin-theme .toast {
 
 .main-container {
     display: flex;
+    align-items: stretch;
     max-width: 1440px;
     margin: 0 auto;
 }
@@ -275,7 +276,8 @@ body.admin-theme .toast {
     flex-shrink: 0;
     padding: 2rem 1.5rem;
     border-right: 1px solid var(--border-base);
-    height: calc(100vh - 64px);
+    min-height: calc(100vh - 64px);
+    height: auto;
     position: sticky;
     top: 64px;
     background-color: var(--bg-surface);

@@ -1233,14 +1233,16 @@ async function handleAddMember(event) {
         });
 
         if (result.success) {
-            showToast('成员添加成功！', 'success');
+            showToast('成员添加成功！正在刷新列表...', 'success');
             form.reset();
-            // 在模态框模式下，只负载列表
+
             if (document.getElementById('manageMembersModal').classList.contains('show')) {
                 await loadModalMemberList(teamId);
-            } else {
-                setTimeout(() => location.reload(), 1500);
             }
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
         } else {
             showToast(result.error || '添加失败', 'error');
         }
