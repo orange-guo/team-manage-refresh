@@ -1627,6 +1627,7 @@ async def settings_page(
                 "periodic_team_sync_days": await settings_service.get_setting(db, "periodic_team_sync_days", "7"),
                 "default_team_max_members": await settings_service.get_setting(db, "default_team_max_members", "6"),
                 "warranty_expiration_mode": await settings_service.get_warranty_expiration_mode(db),
+                "ui_theme": settings_service.normalize_ui_theme(await settings_service.get_setting(db, "ui_theme", DEFAULT_UI_THEME)),
             }
         )
 
