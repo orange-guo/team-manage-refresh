@@ -297,6 +297,12 @@ function showModal(modalId) {
     if (modal) {
         modal.classList.add('show');
         document.body.style.overflow = 'hidden'; // 防止背景滚动
+        document.body.classList.add('modal-open');
+
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('show');
 
         if (modalId === 'importTeamModal') {
             setSingleImportMode('quick');
@@ -325,7 +331,12 @@ function hideModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('show');
-        document.body.style.overflow = '';
+
+        const openModal = document.querySelector('.modal-overlay.show');
+        if (!openModal) {
+            document.body.style.overflow = '';
+            document.body.classList.remove('modal-open');
+        }
 
         if (modalId === 'importTeamModal') {
             resetBatchImportForm();
