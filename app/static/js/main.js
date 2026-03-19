@@ -604,6 +604,18 @@ function toIsoStringWithOffset8(dateObj) {
     return iso.slice(0, 19) + '+08:00';
 }
 
+function normalizeOAuthAccountId(value) {
+    const normalized = String(value || '').trim();
+    if (!normalized) return '';
+
+    const placeholders = new Set(['default', 'personal', 'none', 'null', 'me', 'self']);
+    if (placeholders.has(normalized.toLowerCase())) {
+        return '';
+    }
+
+    return normalized;
+}
+
 function buildOAuthJsonTemplate(parsedData) {
     const accessToken = parsedData.access_token || '';
     const refreshToken = parsedData.refresh_token || '';
@@ -617,7 +629,9 @@ function buildOAuthJsonTemplate(parsedData) {
     const accessProfile = accessPayload['https://api.openai.com/profile'] || {};
     const idAuth = idPayload['https://api.openai.com/auth'] || {};
 
-    const accountId = raw.account_id || parsedData.account_id || accessAuth.chatgpt_account_id || idAuth.chatgpt_account_id || '';
+    const accountId = normalizeOAuthAccountId(
+        raw.account_id || parsedData.account_id || accessAuth.chatgpt_account_id || idAuth.chatgpt_account_id || ''
+    );
     const email = raw.email || parsedData.email || accessProfile.email || idPayload.email || '';
     const exp = accessPayload.exp ? new Date(accessPayload.exp * 1000) : null;
     const expired = raw.expired || parsedData.expired || (exp ? toIsoStringWithOffset8(exp) : '');
