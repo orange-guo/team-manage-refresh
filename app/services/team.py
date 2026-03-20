@@ -1599,7 +1599,19 @@ class TeamService:
 
             logger.info(f"获取 Team {team_id} 成员列表成功: 共 {len(all_members)} 个成员 (已加入: {members_result['total']})")
 
-            # 6. 请求成功，重置错误状态
+            # 6. 持久化最新人数，避免“查看成员/撤回时已拿到实时列表，但数据库人数仍旧值”
+            #    这会直接影响可用席位统计、active/full 状态判断，以及基于数据库的撤回后显示。
+            live_member_count = len(all_members)
+            team.current_members = live_member_count
+            if team.expires_at and team.expires_at < get_now():
+                team.status = "expired"
+            elif team.current_members >= team.max_members:
+                team.status = "full"
+            else:
+                team.status = "active"
+            team.last_sync = get_now()
+
+            # 7. 请求成功，重置错误状态
             await self._reset_error_status(team, db_session)
 
             return {
@@ -2291,6 +2303,10 @@ class TeamService:
             
             if not target:
                 logger.warning(f"在 Team {team_id} 中未找到邮箱为 {email} 的成员或邀请")
+                # get_team_members 已拿到实时成员/邀请列表，但历史记录可能已经落后。
+                # 此时主动同步一次，确保 current_members/status 与远端保持一致，
+                # 否则撤回记录等后续流程会删除本地 RedemptionRecord，却保留错误的人数统计。
+                await self.sync_team_info(team_id, db_session)
                 # 即使没找到也返回成功，以便上层逻辑继续更新记录
                 return {"success": True, "message": "成员已不存在"}
 
