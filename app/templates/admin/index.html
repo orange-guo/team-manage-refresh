@@ -132,6 +132,7 @@
 
     .content-section.dropdown-open {
         z-index: 80;
+        padding-bottom: calc(1.5rem + var(--dropdown-space, 0px));
     }
 
     @media (max-width: 1240px) {
@@ -1068,6 +1069,14 @@
     function setDropdownSectionState(menu, isOpen) {
         const section = menu ? menu.closest('.content-section') : null;
         if (!section) return;
+
+        if (isOpen) {
+            const dropdownSpace = menu.offsetHeight + 16;
+            section.style.setProperty('--dropdown-space', `${dropdownSpace}px`);
+        } else {
+            section.style.removeProperty('--dropdown-space');
+        }
+
         section.classList.toggle('dropdown-open', isOpen);
     }
 
