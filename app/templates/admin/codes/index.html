@@ -434,34 +434,41 @@
 <style>
     .codes-toolbar {
         align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: 1rem;
     }
 
     .codes-toolbar-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 0.75rem;
-        flex: 1;
-        flex-wrap: wrap;
+        gap: 0.5rem;
+        flex: 0 1 auto;
+        flex-wrap: nowrap;
+        min-width: 0;
     }
 
     .codes-search-form {
         margin: 0;
+        flex: 0 0 auto;
     }
 
     .codes-search-form .input-group-clean {
-        min-width: 260px;
+        width: 240px;
+        min-width: 240px;
     }
 
     .codes-header-actions {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         justify-content: flex-end;
         gap: 0.5rem;
     }
 
     .codes-header-actions .btn {
         white-space: nowrap;
-        padding: 0.65rem 0.9rem;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.875rem;
     }
 
     .bulk-action-bar {
@@ -517,14 +524,16 @@
         backdrop-filter: blur(8px);
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1240px) {
         .codes-toolbar {
             align-items: stretch;
+            flex-wrap: wrap;
         }
 
         .codes-toolbar-actions {
             width: 100%;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
 
         .codes-search-form {
@@ -542,6 +551,7 @@
         .codes-header-actions {
             width: 100%;
             justify-content: flex-start;
+            flex-wrap: wrap;
         }
     }
 </style>
