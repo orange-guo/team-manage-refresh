@@ -87,6 +87,56 @@
             font-size: 1.5rem;
         }
     }
+
+    .team-toolbar {
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .team-toolbar .header-group {
+        flex: 1;
+        min-width: 0;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
+    }
+
+    .team-toolbar .search-form {
+        margin: 0;
+        flex: 0 0 auto;
+    }
+
+    .team-toolbar .search-form .input-group-clean {
+        width: 300px;
+        min-width: 300px;
+    }
+
+    .team-toolbar .btn {
+        white-space: nowrap;
+    }
+
+    @media (max-width: 1240px) {
+        .team-toolbar {
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
+        .team-toolbar .header-group {
+            width: 100%;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .team-toolbar .search-form {
+            flex: 1 1 260px;
+        }
+
+        .team-toolbar .search-form .input-group-clean {
+            width: 100%;
+            min-width: 0;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -162,7 +212,7 @@
 
 <!-- Team 列表 -->
 <div class="content-section">
-    <div class="section-header">
+    <div class="section-header team-toolbar">
         <h3>{% if active_page == "welfare" %}福利 Team 列表{% else %}Team 列表{% endif %}</h3>
         <div class="header-group">
             <!-- 批量操作 -->
