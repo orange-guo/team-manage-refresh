@@ -119,7 +119,7 @@
                 <tr data-status="{{ code.status }}">
                     <td>
                         <input type="checkbox" class="code-checkbox" value="{{ code.code }}"
-                            onchange="updateSelectionCount(this)" style="width: auto; margin: 0;">
+                            onchange="updateSelectionCount()" style="width: auto; margin: 0;">
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -486,18 +486,20 @@
 
     #bulkActionBar.bulk-action-bar.viewport-floating {
         position: fixed;
-        left: 50%;
-        top: 0;
-        transform: translateX(-50%);
-        width: min(1080px, calc(100vw - 1.5rem));
-        max-width: min(1080px, calc(100vw - 1.5rem));
-        padding: 0.75rem 1rem;
+        left: calc(50% + 130px);
+        top: 50%;
+        right: auto;
+        bottom: auto;
+        transform: translate(-50%, -50%);
+        width: fit-content;
+        max-width: min(620px, calc(100vw - 300px));
+        padding: 0.625rem 0.875rem;
         background: color-mix(in srgb, var(--bg-surface) 94%, #0f172a 6%);
         box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
         border: 1px solid var(--primary);
         border-radius: var(--radius-lg);
         backdrop-filter: blur(10px);
-        z-index: 980;
+        z-index: 1100;
     }
 
     @keyframes slideUp {
@@ -572,7 +574,8 @@
             width: calc(100vw - 1rem);
             max-width: calc(100vw - 1rem);
             left: 0.5rem;
-            transform: none;
+            right: auto;
+            transform: translateY(-50%);
             padding: 0.75rem;
             gap: 0.75rem;
             flex-direction: column;
@@ -642,12 +645,6 @@
         prepareFloatingDropdowns();
         // Init Column Toggler
         initColumnToggler('.data-table', 'codes_list_columns');
-
-        const bulkActionBar = document.getElementById('bulkActionBar');
-        if (bulkActionBar) {
-            window.addEventListener('scroll', () => updateBulkActionBarFloatingPosition(), true);
-            window.addEventListener('resize', () => updateBulkActionBarFloatingPosition());
-        }
     });
 
     // Column Toggler Logic & Pagination
@@ -748,7 +745,7 @@
                 cb.checked = checkbox.checked;
             }
         });
-        updateSelectionCount(checkbox);
+        updateSelectionCount();
     }
 
     // 取消全选
@@ -760,42 +757,8 @@
         }
     }
 
-    function updateBulkActionBarFloatingPosition(anchorElement = null) {
-        const actionBar = document.getElementById('bulkActionBar');
-        if (!actionBar || actionBar.style.display === 'none') {
-            if (actionBar) {
-                actionBar.classList.remove('viewport-floating');
-                actionBar.style.top = '';
-                actionBar._floatingAnchor = null;
-            }
-            return;
-        }
-
-        if (anchorElement && typeof anchorElement.getBoundingClientRect === 'function') {
-            actionBar._floatingAnchor = anchorElement;
-        }
-
-        const selectedCheckbox = document.querySelector('.code-checkbox:checked');
-        const fallbackAnchor = document.getElementById('selectAll');
-        const anchorNode = anchorElement || actionBar._floatingAnchor || selectedCheckbox || fallbackAnchor;
-        const anchorRect = anchorNode?.getBoundingClientRect();
-
-        actionBar.classList.add('viewport-floating');
-
-        const viewportTopPadding = 12;
-        const viewportBottomPadding = 14;
-        const expectedHeight = actionBar.offsetHeight || 58;
-        const preferredTop = anchorRect
-            ? anchorRect.bottom + 10
-            : (window.innerHeight - expectedHeight - viewportBottomPadding);
-        const maxTop = Math.max(viewportTopPadding, window.innerHeight - expectedHeight - viewportBottomPadding);
-        const top = Math.min(Math.max(preferredTop, viewportTopPadding), maxTop);
-
-        actionBar.style.top = `${top}px`;
-    }
-
     // 更新选择计数
-    function updateSelectionCount(anchorElement = null) {
+    function updateSelectionCount() {
         const selected = document.querySelectorAll('.code-checkbox:checked');
         const count = selected.length;
         document.getElementById('selectedCount').innerText = count;
@@ -805,12 +768,10 @@
 
         if (count > 0) {
             actionBar.style.display = 'flex';
-            updateBulkActionBarFloatingPosition(anchorElement);
+            actionBar.classList.add('viewport-floating');
         } else {
             actionBar.style.display = 'none';
             actionBar.classList.remove('viewport-floating');
-            actionBar.style.top = '';
-            actionBar._floatingAnchor = null;
         }
     }
 
