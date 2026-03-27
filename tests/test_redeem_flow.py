@@ -89,6 +89,28 @@ class StubTeamService:
             else:
                 team.status = "active"
 
+    async def _handle_api_error(self, result, team, db_session):
+        error_code = result.get("error_code")
+        error_msg = str(result.get("error", "")).lower()
+
+        if error_code in {"account_deactivated", "token_invalidated"}:
+            team.status = "banned"
+            await db_session.commit()
+            return True
+
+        if any(keyword in error_msg for keyword in ["token has been invalidated", "deactivated", "suspended", "not found", "deleted"]):
+            team.status = "banned"
+            await db_session.commit()
+            return True
+
+        if any(keyword in error_msg for keyword in ["maximum number of seats", "full", "no seats"]):
+            team.status = "full"
+            await db_session.commit()
+            return True
+
+        await db_session.commit()
+        return False
+
     async def ensure_access_token(self, team, db_session):
         return "token"
 
@@ -475,6 +497,108 @@ class RedeemFlowServiceTests(unittest.IsolatedAsyncioTestCase):
             records = (await session.execute(select(RedemptionRecord))).scalars().all()
             self.assertEqual(len(records), 1)
             self.assertEqual(records[0].team_id, 2)
+
+    async def test_auto_retry_when_invite_api_reports_team_banned(self):
+        await self._seed_basic_data()
+        service = RedeemFlowService()
+        service.redemption_service = StubRedemptionService()
+        service.team_service = StubTeamService()
+        service.chatgpt_service = StubChatGPTService(
+            {
+                "acct-1": [{"success": False, "error": "account deactivated", "error_code": "account_deactivated"}],
+                "acct-2": [{"success": True, "data": {"account_invites": [{"email": "user@example.com"}]}}],
+            }
+        )
+
+        async with self.session_factory() as session:
+            with patch("app.services.redeem_flow.asyncio.create_task", side_effect=self._close_coro):
+                result = await service.redeem_and_join_team(
+                    email="user@example.com",
+                    code="TEST-CODE-0001",
+                    team_id=None,
+                    db_session=session,
+                )
+
+            self.assertTrue(result["success"])
+            self.assertEqual(result["team_info"]["id"], 2)
+
+            team_1 = await session.get(Team, 1)
+            self.assertEqual(team_1.status, "banned")
+            self.assertEqual(team_1.current_members, 3)
+
+            code = await session.get(RedemptionCode, 1)
+            self.assertEqual(code.status, "used")
+            self.assertEqual(code.used_team_id, 2)
+
+            records = (await session.execute(select(RedemptionRecord))).scalars().all()
+            self.assertEqual(len(records), 1)
+            self.assertEqual(records[0].team_id, 2)
+
+    async def test_auto_retry_when_invite_api_reports_token_invalidated(self):
+        await self._seed_basic_data()
+        service = RedeemFlowService()
+        service.redemption_service = StubRedemptionService()
+        service.team_service = StubTeamService()
+        service.chatgpt_service = StubChatGPTService(
+            {
+                "acct-1": [{"success": False, "error": "token has been invalidated", "error_code": "token_invalidated"}],
+                "acct-2": [{"success": True, "data": {"account_invites": [{"email": "user@example.com"}]}}],
+            }
+        )
+
+        async with self.session_factory() as session:
+            with patch("app.services.redeem_flow.asyncio.create_task", side_effect=self._close_coro):
+                result = await service.redeem_and_join_team(
+                    email="user@example.com",
+                    code="TEST-CODE-0001",
+                    team_id=None,
+                    db_session=session,
+                )
+
+            self.assertTrue(result["success"])
+            self.assertEqual(result["team_info"]["id"], 2)
+
+            team_1 = await session.get(Team, 1)
+            self.assertEqual(team_1.status, "banned")
+            self.assertEqual(team_1.current_members, 3)
+
+            code = await session.get(RedemptionCode, 1)
+            self.assertEqual(code.status, "used")
+            self.assertEqual(code.used_team_id, 2)
+
+    async def test_locked_team_banned_returns_conflict_without_consuming_code(self):
+        await self._seed_basic_data()
+        service = RedeemFlowService()
+        service.redemption_service = StubRedemptionService()
+        service.team_service = StubTeamService()
+        service.chatgpt_service = StubChatGPTService(
+            {
+                "acct-1": [{"success": False, "error": "account deactivated", "error_code": "account_deactivated"}],
+            }
+        )
+
+        async with self.session_factory() as session:
+            with patch("app.services.redeem_flow.asyncio.create_task", side_effect=self._close_coro):
+                result = await service.redeem_and_join_team(
+                    email="user@example.com",
+                    code="TEST-CODE-0001",
+                    team_id=1,
+                    db_session=session,
+                )
+
+            self.assertFalse(result["success"])
+            self.assertIn("登录状态已失效", result["error"])
+
+            team_1 = await session.get(Team, 1)
+            self.assertEqual(team_1.status, "banned")
+            self.assertEqual(team_1.current_members, 3)
+
+            code = await session.get(RedemptionCode, 1)
+            self.assertEqual(code.status, "unused")
+            self.assertIsNone(code.used_team_id)
+
+            records = (await session.execute(select(RedemptionRecord))).scalars().all()
+            self.assertEqual(records, [])
 
     async def test_validate_code_rejects_expired_warranty_code(self):
         async with self.session_factory() as session:

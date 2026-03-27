@@ -408,7 +408,34 @@ class RedeemFlowService:
                                         target_team.status = "expired"
                                     else:
                                         target_team.status = "active"
-                                    await db_session.commit()
+
+                                    await self.team_service._handle_api_error(
+                                        {
+                                            "success": False,
+                                            "error": err,
+                                            "error_code": invite_res.get("error_code"),
+                                        },
+                                        target_team,
+                                        db_session,
+                                    )
+
+                                    if db_session.in_transaction():
+                                        await db_session.commit()
+
+                                    if target_team.status in {"banned", "expired", "error"}:
+                                        unavailable_msg = (
+                                            f"Team {team_id_final} 登录状态已失效({target_team.status})，"
+                                            "请刷新后重试或选择其他 Team"
+                                        )
+                                        if selected_team_locked:
+                                            return {"success": False, "error": unavailable_msg}
+
+                                        excluded_team_ids.add(team_id_final)
+                                        current_target_team_id = None
+                                        raise Exception(
+                                            f"Team {team_id_final} 状态已更新为 {target_team.status}，自动切换其他 Team"
+                                        )
+
                                     raise Exception(err)
 
                             invite_data = invite_res.get("data", {})
