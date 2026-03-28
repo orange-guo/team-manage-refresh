@@ -14,6 +14,9 @@
   --danger: #ef4444;
   --primary-start: #4f8ef7;
   --primary-end: #7b5ea7;
+  --focus-ring: rgba(79, 142, 247, 0.32);
+  --surface-elev-1: rgba(18, 30, 58, 0.72);
+  --team-card-hover: rgba(79, 142, 247, 0.12);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -165,7 +168,7 @@ body {
   gap: 8px;
   border-radius: 16px;
   border: 1px solid var(--border-base);
-  background: rgba(15, 23, 42, 0.45);
+  background: var(--surface-elev-1);
   backdrop-filter: blur(12px);
   padding: 6px;
 }
@@ -278,7 +281,7 @@ body {
   display: none;
   border-radius: 20px;
   border: 1px solid var(--border-base);
-  background: var(--surface);
+  background: var(--surface-elev-1);
   backdrop-filter: blur(18px);
   padding: 28px;
 }
@@ -304,7 +307,7 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 7px;
-  color: #a8b3c7;
+  color: var(--text-secondary);
   font-size: 12px;
   letter-spacing: 0.06em;
 }
@@ -410,7 +413,7 @@ body {
 .result-shell {
   border-radius: 20px;
   border: 1px solid var(--border-base);
-  background: var(--surface);
+  background: var(--surface-elev-1);
   backdrop-filter: blur(18px);
   padding: 28px;
 }
@@ -429,12 +432,13 @@ body {
   background: rgba(255, 255, 255, 0.03);
   padding: 14px;
   cursor: pointer;
-  transition: border-color .2s ease, background .2s ease;
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
 }
 .team-card:hover,
 .team-card.selected {
   border-color: rgba(79, 142, 247, 0.45);
-  background: rgba(79, 142, 247, 0.12);
+  background: var(--team-card-hover);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--team-card-hover) 65%, transparent);
 }
 
 .team-name { font-weight: 600; margin-bottom: 9px; }
@@ -474,7 +478,7 @@ body {
 .result-details {
   border-radius: 14px;
   border: 1px solid var(--border-base);
-  background: rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--surface-elev-1) 86%, transparent);
   padding: 12px 14px;
   margin-bottom: 16px;
 }
@@ -574,7 +578,7 @@ body.redeem-page .hero-header {
 
 body.redeem-page .tab-panel,
 body.redeem-page .result-shell {
-  background: var(--surface) !important;
+  background: var(--surface-elev-1) !important;
   border: 1px solid var(--border-base) !important;
   backdrop-filter: blur(18px) !important;
 }
@@ -699,6 +703,9 @@ body.theme-warm {
   --success: #2E7D5A;
   --warning: #9A6B00;
   --danger: #d14343;
+  --focus-ring: rgba(212, 105, 42, 0.28);
+  --surface-elev-1: #fffdf9;
+  --team-card-hover: #fef1e5;
   background: radial-gradient(120% 120% at 0% 0%, #fff7eb 0%, var(--bg-0) 52%, #f8f1e7 100%);
 }
 
@@ -868,4 +875,23 @@ body.theme-warm .announcement-body h3 {
 
 body.theme-warm .announcement-body a {
   color: #b45a24;
+}
+
+.top-tab:focus-visible,
+.form-input:focus-visible,
+.btn:focus-visible,
+.team-card:focus-visible,
+.announcement-close:focus-visible,
+.announcement-footer .btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

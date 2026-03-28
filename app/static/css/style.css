@@ -39,7 +39,15 @@
     --radius-lg: 16px;
     --radius-full: 9999px;
 
+    /* Interaction & surface tokens */
+    --focus-ring: rgba(99, 102, 241, 0.28);
+    --surface-elev-1: color-mix(in srgb, var(--bg-surface) 94%, #ffffff 6%);
+    --table-row-hover: color-mix(in srgb, var(--primary-soft) 35%, var(--bg-surface) 65%);
+
     /* Fixed mappings for compatibility */
+    --border-main: var(--border-base);
+    --bg-card: var(--bg-surface);
+    --text-secondary: var(--text-muted);
     --primary-color: var(--primary);
     --secondary-color: var(--text-muted);
     --text-color: var(--text-main);
@@ -93,6 +101,9 @@ body.admin-theme {
     --status-banned-text: #cbd5e1;
     --toast-bg: rgba(10, 20, 45, 0.92);
     --toast-border: rgba(148, 163, 184, 0.3);
+    --focus-ring: rgba(79, 142, 247, 0.34);
+    --surface-elev-1: color-mix(in srgb, var(--bg-surface) 94%, #1b2f5d 6%);
+    --table-row-hover: rgba(79, 142, 247, 0.13);
     background: radial-gradient(130% 120% at 0% 0%, #111b3a 0%, #060c1f 52%, #040714 100%);
     color: var(--text-main);
 }
@@ -124,6 +135,9 @@ html.theme-warm body.admin-theme {
     --status-banned-text: #7d7063;
     --toast-bg: #ffffff;
     --toast-border: #e3d6c5;
+    --focus-ring: rgba(212, 105, 42, 0.28);
+    --surface-elev-1: color-mix(in srgb, var(--bg-surface) 92%, #fff4e8 8%);
+    --table-row-hover: color-mix(in srgb, var(--primary-soft) 56%, var(--bg-surface) 44%);
     background: radial-gradient(120% 120% at 0% 0%, #fff7eb 0%, #fdf8f2 52%, #f8f1e7 100%);
     color: var(--text-main);
 }
@@ -205,9 +219,12 @@ body.admin-theme .dropdown-menu {
 }
 
 body.admin-theme .menu-item a:hover,
-body.admin-theme .data-table tbody tr:hover td,
 body.admin-theme .dropdown-item:hover {
     background: var(--menu-hover-bg);
+}
+
+body.admin-theme .data-table tbody tr:hover td {
+    background: var(--table-row-hover);
 }
 
 body.admin-theme .menu-item.active a {
@@ -362,7 +379,7 @@ body.admin-theme .toast {
 
 /* Components */
 .content-section {
-    background-color: var(--bg-surface);
+    background-color: var(--surface-elev-1);
     border: 1px solid var(--border-base);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
@@ -380,7 +397,7 @@ body.admin-theme .toast {
 }
 
 .card {
-    background-color: var(--bg-surface);
+    background-color: var(--surface-elev-1);
     border: 1px solid var(--border-base);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
@@ -389,6 +406,7 @@ body.admin-theme .toast {
 
 .card:hover {
     box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--border-base) 70%, var(--primary) 30%);
 }
 
 /* Buttons */
@@ -407,6 +425,13 @@ body.admin-theme .toast {
     outline: none;
 }
 
+.btn:disabled {
+    opacity: 0.58;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .btn-primary {
     background-color: var(--primary);
     color: white;
@@ -416,6 +441,10 @@ body.admin-theme .toast {
     background-color: var(--primary-hover);
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .btn-secondary {
@@ -429,6 +458,10 @@ body.admin-theme .toast {
     border-color: var(--text-dim);
 }
 
+.btn-secondary:active {
+    background-color: color-mix(in srgb, var(--bg-main) 86%, var(--primary-soft) 14%);
+}
+
 .btn-danger {
     background-color: var(--danger-soft);
     color: var(--danger);
@@ -438,6 +471,10 @@ body.admin-theme .toast {
 .btn-danger:hover {
     background-color: var(--danger);
     color: white;
+}
+
+.btn-danger:active {
+    filter: brightness(0.95);
 }
 
 .btn-secondary.active {
@@ -455,6 +492,10 @@ body.admin-theme .toast {
 .btn-info:hover {
     background-color: var(--info);
     color: white;
+}
+
+.btn-info:active {
+    filter: brightness(0.95);
 }
 
 .btn-sm {
@@ -844,7 +885,7 @@ body.admin-theme .toast {
     /* Make header sticky */
     top: 0;
     z-index: 10;
-    background-color: var(--bg-surface);
+    background-color: color-mix(in srgb, var(--bg-surface) 92%, var(--bg-main) 8%);
     /* Ensure background is solid */
     box-shadow: 0 1px 0 var(--border-base);
     /* Add shadow for separation */
@@ -862,7 +903,7 @@ body.admin-theme .toast {
 }
 
 .data-table tbody tr:hover td {
-    background-color: var(--bg-main);
+    background-color: var(--table-row-hover);
 }
 
 /* Status Badges */
@@ -1417,7 +1458,7 @@ body.admin-theme .toast {
 }
 
 .stat-card {
-    background-color: var(--bg-surface);
+    background-color: var(--surface-elev-1);
     border: 1px solid var(--border-base);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
@@ -1442,6 +1483,11 @@ body.admin-theme .toast {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.stat-icon i {
+    width: 20px;
+    height: 20px;
 }
 
 .stat-value {
@@ -1985,7 +2031,7 @@ html.theme-warm body.admin-theme .status-badge.status-banned {
 
 body.admin-theme.theme-warm .stat-card,
 html.theme-warm body.admin-theme .stat-card {
-    background: #fffaf5;
+    background: color-mix(in srgb, var(--surface-elev-1) 90%, #fff7ee 10%);
     border-color: #eadfce;
 }
 
@@ -2084,5 +2130,35 @@ html.theme-warm body.admin-theme .dropdown-menu {
 
     body.admin-theme .content-section {
         margin-bottom: 1.25rem;
+    }
+}
+
+:where(
+    a,
+    button,
+    .btn,
+    .filter-tab,
+    .page-number,
+    .dropdown-item,
+    .settings-nav-pill,
+    input,
+    select,
+    textarea,
+    .form-control,
+    .form-control-sm,
+    .input-group-clean
+):focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
