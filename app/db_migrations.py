@@ -176,6 +176,37 @@ def run_auto_migration():
             ON team_email_mappings (team_id, status)
         """)
 
+        if not table_exists(cursor, "experience_assignments"):
+            logger.info("创建 experience_assignments 表")
+            cursor.execute("""
+                CREATE TABLE experience_assignments (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    email VARCHAR(255) NOT NULL,
+                    team_id INTEGER NOT NULL,
+                    expires_at DATETIME NOT NULL,
+                    status VARCHAR(20) NOT NULL DEFAULT 'active',
+                    auto_remove_result TEXT,
+                    created_at DATETIME,
+                    updated_at DATETIME,
+                    removed_at DATETIME,
+                    FOREIGN KEY(team_id) REFERENCES teams(id) ON DELETE CASCADE
+                )
+            """)
+            migrations_applied.append("experience_assignments")
+
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_experience_email_status
+            ON experience_assignments (email, status)
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_experience_expires_status
+            ON experience_assignments (expires_at, status)
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_experience_team_status
+            ON experience_assignments (team_id, status)
+        """)
+
         # 提交更改
         conn.commit()
         

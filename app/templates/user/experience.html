@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>体验组队</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/user.css">
+</head>
+<body>
+    <div class="bg-scene">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <div class="page-wrap">
+        <div class="container full-layout">
+            <header class="hero-header">
+                <span class="logo-badge">EXPERIENCE</span>
+                <h1>体验组队</h1>
+                <p class="hero-subtitle">提交邮箱后自动拉入体验池，10 分钟后自动移出。</p>
+                <div class="spots-badge welfare-spots-badge">
+                    <i class="fa-solid fa-users"></i>
+                    当前可用席位：<span class="seats-count" id="remainingSpots">{{ remaining_spots }}</span>
+                </div>
+            </header>
+
+            <main class="main-shell">
+                <section class="tab-panel active" style="display:block;">
+                    <div class="panel-head">
+                        <h2>提交体验邮箱</h2>
+                        <p>规则：单个账号最多 4 个体验位；满位会自动切换下一个账号；全满会提示等待。</p>
+                    </div>
+
+                    <form id="experienceForm" class="stack-form" autocomplete="off">
+                        <div class="form-group">
+                            <label for="email">邮箱 <span class="required-star">*</span></label>
+                            <div class="field-wrap">
+                                <i class="fa-solid fa-envelope field-icon"></i>
+                                <input id="email" name="email" type="email" required placeholder="请输入邮箱" style="padding-left:42px;">
+                            </div>
+                        </div>
+
+                        <button id="submitBtn" type="submit" class="btn-primary">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            提交并拉入
+                        </button>
+                    </form>
+
+                    <div class="info-box" style="margin-top:16px;">
+                        <i class="fa-solid fa-circle-info info-icon"></i>
+                        <div>
+                            <div>拉入成功后会立即开始倒计时。</div>
+                            <div>到时后系统自动移出，无需手动处理。</div>
+                        </div>
+                    </div>
+
+                    <div id="resultBox" class="warning-box" style="display:none; margin-top: 18px;">
+                        <i id="resultIcon" class="fa-solid fa-circle-info"></i>
+                        <div>
+                            <div id="resultMessage" style="font-weight:600;"></div>
+                            <div id="teamInfo" style="margin-top:6px; opacity:.92;"></div>
+                            <div id="countdown" style="margin-top:8px; font-family: 'Sora', sans-serif; font-size: 18px;"></div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="/static/js/experience.js"></script>
+</body>
+</html>

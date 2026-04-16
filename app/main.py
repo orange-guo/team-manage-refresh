@@ -20,11 +20,12 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from contextlib import asynccontextmanager
 # 导入路由
-from app.routes import redeem, auth, admin, api, user, warranty
+from app.routes import redeem, auth, admin, api, user, warranty, experience
 from app.config import settings
 from app.database import init_db, close_db, AsyncSessionLocal
 from app.services.auth import auth_service
 from app.services.team import team_service
+from app.services.experience import experience_service
 
 # 获取项目根目录
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +50,9 @@ MIN_PERIODIC_TEAM_SYNC_INTERVAL_HOURS = 1
 MAX_PERIODIC_TEAM_SYNC_INTERVAL_HOURS = 24 * 7
 MIN_PERIODIC_TEAM_SYNC_DAYS = 1
 MAX_PERIODIC_TEAM_SYNC_DAYS = 30
+
+EXPERIENCE_AUTO_REMOVE_INTERVAL_SECONDS = 30
+EXPERIENCE_AUTO_REMOVE_BATCH_SIZE = 50
 
 
 def _safe_int(value, default):
@@ -223,6 +227,25 @@ async def scheduled_periodic_team_status_sync():
         logger.error(f"Team 周期状态同步任务执行失败: {e}")
 
 
+async def scheduled_experience_auto_remove():
+    """定时清理到期体验组队记录并自动移出邮箱。"""
+    try:
+        async with AsyncSessionLocal() as session:
+            stats = await experience_service.cleanup_expired_assignments(
+                session,
+                limit=EXPERIENCE_AUTO_REMOVE_BATCH_SIZE,
+            )
+            if stats.get("processed", 0) > 0:
+                logger.info(
+                    "体验组队自动移出完成: processed=%s removed=%s failed=%s",
+                    stats.get("processed", 0),
+                    stats.get("removed", 0),
+                    stats.get("failed", 0),
+                )
+    except Exception as e:
+        logger.error(f"体验组队自动移出任务执行失败: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -259,6 +282,16 @@ async def lifespan(app: FastAPI):
             )
         else:
             logger.info("Team 周期状态同步任务已禁用")
+
+        scheduler.add_job(
+            scheduled_experience_auto_remove,
+            trigger=IntervalTrigger(seconds=EXPERIENCE_AUTO_REMOVE_INTERVAL_SECONDS),
+            id="experience_auto_remove",
+            replace_existing=True,
+        )
+        if not scheduler.running:
+            scheduler.start()
+        logger.info("定时任务已启动: 每 %s 秒自动清理体验组队", EXPERIENCE_AUTO_REMOVE_INTERVAL_SECONDS)
 
         logger.info("数据库初始化完成")
     except Exception as e:
@@ -358,6 +391,7 @@ logger = logging.getLogger(__name__)
 
 # 注册路由
 app.include_router(user.router)  # 用户路由(根路径)
+app.include_router(experience.router)
 app.include_router(redeem.router)
 app.include_router(warranty.router)
 app.include_router(auth.router)

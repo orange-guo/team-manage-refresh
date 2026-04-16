@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{% if active_page == "welfare" %}福利车位 - GPT Team 管理系统{% else %}控制台 - GPT Team 管理系统{% endif %}{% endblock %}
+{% block title %}{% if active_page == "welfare" %}体验组队 - GPT Team 管理系统{% else %}长期组队 - GPT Team 管理系统{% endif %}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -276,7 +276,7 @@
 
 {% block content %}
 <div class="page-header">
-    <h2>{% if active_page == "welfare" %}福利车位{% else %}控制台{% endif %}</h2>
+    <h2>{% if active_page == "welfare" %}体验组队{% else %}长期组队{% endif %}</h2>
 </div>
 
 <!-- 统计卡片 -->
@@ -300,21 +300,15 @@
         <div class="stat-icon"><i data-lucide="car-front"></i></div>
         <div class="stat-info-group">
             <div class="stat-value">{{ stats.remaining_spots }}</div>
-            <div class="stat-label">福利剩余车位</div>
+            <div class="stat-label">体验剩余席位</div>
         </div>
     </div>
     <div class="stat-card stat-warning welfare-code-card">
-        <div class="stat-icon"><i data-lucide="ticket"></i></div>
+        <div class="stat-icon"><i data-lucide="timer"></i></div>
         <div class="stat-info-group">
-            <div class="stat-label">通用兑换码</div>
-            <div class="welfare-code-value" id="welfareCommonCodeText" title="{{ stats.welfare_code or '' }}">{{ stats.welfare_code or '-' }}</div>
-            <div class="stat-sub-label" id="welfareCodeUsageText">剩余次数 {{ stats.welfare_code_remaining }} / {{ stats.welfare_code_limit }}</div>
-            <div class="welfare-code-row">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="copyWelfareCode()" {% if not stats.welfare_code %}disabled{% endif %} id="copyWelfareCodeBtn">
-                    <i data-lucide="copy" style="width: 14px; height: 14px;"></i> 复制兑换码
-                </button>
-            </div>
-            <input type="hidden" id="welfareCommonCodeValue" value="{{ stats.welfare_code or '' }}">
+            <div class="stat-label">体验规则</div>
+            <div class="welfare-code-value">10 分钟自动移出</div>
+            <div class="stat-sub-label">单账号最多 4 个体验席位，满位自动切换下一账号</div>
         </div>
     </div>
     {% else %}
@@ -347,7 +341,7 @@
 <!-- Team 列表 -->
 <div class="content-section team-list-toolbar-section">
     <div class="section-header team-toolbar">
-        <h3>{% if active_page == "welfare" %}福利 Team 列表{% else %}Team 列表{% endif %}</h3>
+        <h3>{% if active_page == "welfare" %}体验池 Team 列表{% else %}Team 列表{% endif %}</h3>
         <div class="header-group">
             <!-- 批量操作 -->
             <div id="batchActions" class="batch-actions-group" style="display: none;">
@@ -365,11 +359,11 @@
                 </button>
                 {% if active_page == "welfare" %}
                 <button type="button" id="btnBatchTransferPool" class="btn btn-secondary btn-sm">
-                    <i data-lucide="arrow-left-right" style="width: 14px; height: 14px;"></i> 转入常规席位
+                    <i data-lucide="arrow-left-right" style="width: 14px; height: 14px;"></i> 转入长期组队
                 </button>
                 {% else %}
                 <button type="button" id="btnBatchTransferPool" class="btn btn-secondary btn-sm">
-                    <i data-lucide="arrow-left-right" style="width: 14px; height: 14px;"></i> 转入福利车位
+                    <i data-lucide="arrow-left-right" style="width: 14px; height: 14px;"></i> 转入体验组队
                 </button>
                 {% endif %}
                 <span class="selected-count text-muted small" style="margin-left: 8px;">已选 0 项</span>
@@ -413,13 +407,13 @@
             </div>
 
             <!-- 搜索框 -->
-            <form action="{% if active_page == 'welfare' %}/admin/welfare{% else %}/admin{% endif %}" method="get" class="search-form">
+            <form action="{% if active_page == 'welfare' %}/admin/experience{% else %}/admin{% endif %}" method="get" class="search-form">
                 <div class="input-group-clean">
                     <i data-lucide="search" style="width: 14px; height: 14px;"></i>
                     <input type="text" name="search" value="{{ search or '' }}" placeholder="搜索邮箱/Account ID..."
                         style="width: 200px;">
                     {% if search %}
-                    <a href="{% if active_page == 'welfare' %}/admin/welfare{% else %}/admin{% endif %}" title="清除搜索">
+                    <a href="{% if active_page == 'welfare' %}/admin/experience{% else %}/admin{% endif %}" title="清除搜索">
                         <i data-lucide="x-circle" style="width: 14px; height: 14px;"></i>
                     </a>
                     {% endif %}
@@ -441,11 +435,6 @@
     </div>
 </div>
 
-            {% if active_page == "welfare" %}
-            <button onclick="generateWelfareCode()" class="btn btn-secondary" id="generateWelfareCodeBtn">
-                <i data-lucide="ticket-plus" style="width: 16px; height: 16px;"></i> 生成通用兑换码
-            </button>
-            {% endif %}
             <button onclick="showModal('importTeamModal')" class="btn btn-primary">
                 <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> 导入 Team
             </button>
@@ -1297,7 +1286,7 @@
         }
     });
 
-    const dashboardBasePath = "{{ '/admin/welfare' if active_page == 'welfare' else '/admin' }}";
+    const dashboardBasePath = "{{ '/admin/experience' if active_page == 'welfare' else '/admin' }}";
 
     function filterByStatus(status) {
         const url = new URL(window.location.href);
@@ -1588,7 +1577,7 @@
     function handleBatchTransferPool() {
         const isWelfarePage = '{{ active_page }}' === 'welfare';
         const targetPoolType = isWelfarePage ? 'normal' : 'welfare';
-        const actionName = isWelfarePage ? '批量转入常规席位' : '批量转入福利车位';
+        const actionName = isWelfarePage ? '批量转入长期组队' : '批量转入体验组队';
 
         handleBatchAction('/admin/teams/batch-transfer-pool', actionName, {
             buildBody(selectedIds) {

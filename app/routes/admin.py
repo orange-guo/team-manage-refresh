@@ -163,7 +163,7 @@ async def admin_dashboard(
         if status_filter is None and legacy_status is not None:
             status_filter = legacy_status
 
-        logger.info(f"管理员访问控制台, search={search}, page={page}, per_page={per_page}, status_filter={status_filter}")
+        logger.info(f"管理员访问长期组队, search={search}, page={page}, per_page={per_page}, status_filter={status_filter}")
 
         # 设置每页数量
         # per_page = 20 (Removed hardcoded value)
@@ -216,6 +216,7 @@ async def admin_dashboard(
 
 
 @router.get("/welfare", response_class=HTMLResponse)
+@router.get("/experience", response_class=HTMLResponse)
 async def welfare_dashboard(
     request: Request,
     page: int = 1,
@@ -226,7 +227,7 @@ async def welfare_dashboard(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(require_admin)
 ):
-    """福利车位管理页"""
+    """体验组队管理页"""
     try:
         from app.main import templates
 
@@ -236,19 +237,10 @@ async def welfare_dashboard(
         teams_result = await team_service.get_all_teams(db, page=page, per_page=per_page, search=search, status=status_filter, pool_type="welfare")
         team_stats = await team_service.get_stats(db, pool_type="welfare")
         remaining_spots = await team_service.get_total_available_seats(db, pool_type="welfare")
-        welfare_usage = await redemption_service.get_virtual_welfare_code_usage(db)
-        welfare_code = str(welfare_usage.get("welfare_code") or "")
-        welfare_used = int(welfare_usage.get("used_count") or 0)
-        effective_limit = max(int(welfare_usage.get("remaining_count") or 0), 0)
-
         stats = {
             "total_teams": team_stats["total"],
             "available_teams": team_stats["available"],
             "remaining_spots": remaining_spots,
-            "welfare_code": welfare_code,
-            "welfare_code_limit": effective_limit,
-            "welfare_code_used": welfare_used,
-            "welfare_code_remaining": effective_limit,
         }
 
         return templates.TemplateResponse(
@@ -272,8 +264,8 @@ async def welfare_dashboard(
             }
         )
     except Exception as e:
-        logger.exception("加载福利车位页面失败")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="加载福利车位页面失败，请稍后重试")
+        logger.exception("加载体验组队页面失败")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="加载体验组队页面失败，请稍后重试")
 
 
 @router.post("/welfare/code/generate")

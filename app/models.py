@@ -40,6 +40,7 @@ class Team(Base):
     team_accounts = relationship("TeamAccount", back_populates="team", cascade="all, delete-orphan")
     redemption_records = relationship("RedemptionRecord", back_populates="team", cascade="all, delete-orphan")
     email_mappings = relationship("TeamEmailMapping", back_populates="team", cascade="all, delete-orphan")
+    experience_assignments = relationship("ExperienceAssignment", back_populates="team", cascade="all, delete-orphan")
 
     # 索引
     __table_args__ = (
@@ -89,6 +90,31 @@ class TeamEmailMapping(Base):
         Index("idx_team_email_unique", "team_id", "email", unique=True),
         Index("idx_team_email_email", "email"),
         Index("idx_team_email_status", "team_id", "status"),
+    )
+
+
+class ExperienceAssignment(Base):
+    """体验组队自动拉人记录表"""
+    __tablename__ = "experience_assignments"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    email = Column(String(255), nullable=False, comment="用户邮箱(统一存小写)")
+    team_id = Column(Integer, ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
+    expires_at = Column(DateTime, nullable=False, comment="自动移出时间")
+    status = Column(String(20), nullable=False, default="active", comment="状态: active/expired/failed")
+    auto_remove_result = Column(Text, comment="自动移出结果记录")
+    created_at = Column(DateTime, default=get_now, comment="创建时间")
+    updated_at = Column(DateTime, default=get_now, onupdate=get_now, comment="更新时间")
+    removed_at = Column(DateTime, comment="实际移出时间")
+
+    # 关系
+    team = relationship("Team", back_populates="experience_assignments")
+
+    # 索引
+    __table_args__ = (
+        Index("idx_experience_email_status", "email", "status"),
+        Index("idx_experience_expires_status", "expires_at", "status"),
+        Index("idx_experience_team_status", "team_id", "status"),
     )
 
 
