@@ -39,14 +39,15 @@
 
                     <form id="experienceForm" class="stack-form" autocomplete="off">
                         <div class="form-group">
-                            <label for="email">邮箱 <span class="required-star">*</span></label>
+                            <label for="email">邮箱地址 <span class="required-star">*</span></label>
                             <div class="field-wrap">
                                 <i class="fa-solid fa-envelope field-icon"></i>
-                                <input id="email" name="email" type="email" required placeholder="请输入邮箱" style="padding-left:42px;">
+                                <input id="email" name="email" type="email" required placeholder="your@email.com" class="form-input">
                             </div>
+                            <p class="field-hint">系统将向这个邮箱发出 Team 邀请。</p>
                         </div>
 
-                        <button id="submitBtn" type="submit" class="btn-primary">
+                        <button id="submitBtn" type="submit" class="btn btn-primary">
                             <i class="fa-solid fa-paper-plane"></i>
                             提交并拉入
                         </button>
