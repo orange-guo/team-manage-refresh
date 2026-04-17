@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.services.experience import experience_service
+from app.services.settings import settings_service
 
 logger = logging.getLogger(__name__)
 
@@ -29,12 +30,18 @@ async def experience_page(
         from app.main import templates
 
         remaining_spots = await experience_service.get_total_available_slots(db)
+        announcement_enabled_raw = await settings_service.get_setting(db, "announcement_enabled", "false")
+        announcement_enabled = str(announcement_enabled_raw).lower() in {"1", "true", "yes", "on"}
+        announcement_markdown = await settings_service.get_setting(db, "announcement_markdown", "")
+
         return templates.TemplateResponse(
             request,
             "user/experience.html",
             {
                 "request": request,
                 "remaining_spots": remaining_spots,
+                "announcement_enabled": announcement_enabled,
+                "announcement_markdown": announcement_markdown,
             },
         )
     except Exception:

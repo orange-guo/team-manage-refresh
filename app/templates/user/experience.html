@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/css/user.css">
     <style>
+        .announcement-content code {
+            display: inline-block;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 6px;
+            padding: 0.1rem 0.4rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.92em;
+        }
         .active-list-wrap {
             margin-top: 18px;
             border: 1px solid rgba(148, 163, 184, 0.25);
@@ -177,6 +186,28 @@
         </div>
     </div>
 
+    <div id="announcementModal" class="announcement-modal" aria-hidden="true">
+        <div class="announcement-backdrop" id="announcementBackdrop"></div>
+        <div class="announcement-dialog" role="dialog" aria-modal="true" aria-labelledby="announcementTitle">
+            <div class="announcement-header">
+                <h3 id="announcementTitle"><i class="fa-solid fa-bullhorn"></i> 公告通知</h3>
+                <button type="button" class="announcement-close" id="announcementCloseBtn" aria-label="关闭公告">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="announcement-body announcement-content" id="announcementContent"></div>
+            <div class="announcement-footer">
+                <button type="button" class="btn btn-primary" id="announcementConfirmBtn">我知道了</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.EXPERIENCE_ANNOUNCEMENT = {
+            enabled: {{ announcement_enabled|tojson }},
+            markdown: {{ announcement_markdown|tojson }}
+        };
+    </script>
     <script src="/static/js/experience.js"></script>
 </body>
 </html>

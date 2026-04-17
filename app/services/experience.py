@@ -3,7 +3,7 @@ import logging
 from datetime import timedelta
 from typing import Any, Dict, Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import ExperienceAssignment, ExperienceQueue, Team
@@ -452,6 +452,22 @@ class ExperienceService:
             "queue_failed": queue_stats.get("failed", 0),
             "queue_still": queue_stats.get("still_queued", 0),
         }
+
+    async def clear_queue(self, db_session: AsyncSession) -> Dict[str, int]:
+        """清空体验组队队列（仅 queued 状态）。"""
+        stmt = select(func.count()).select_from(ExperienceQueue).where(ExperienceQueue.status == "queued")
+        result = await db_session.execute(stmt)
+        queued_count = int(result.scalar_one_or_none() or 0)
+
+        if queued_count <= 0:
+            return {"cleared": 0}
+
+        await db_session.execute(
+            delete(ExperienceQueue).where(ExperienceQueue.status == "queued")
+        )
+        await db_session.commit()
+
+        return {"cleared": queued_count}
 
 
 experience_service = ExperienceService()

@@ -23,7 +23,7 @@ from app.services.settings import (
     DEFAULT_UI_THEME,
 )
 from app.services.cliproxyapi import cliproxyapi_service
-from app.models import RedemptionCode, RedemptionRecord, Team
+from app.models import ExperienceQueue, RedemptionCode, RedemptionRecord, Team
 from app.utils.time_utils import get_now
 
 logger = logging.getLogger(__name__)
@@ -142,6 +142,11 @@ class BulkTransferPoolRequest(BaseModel):
     """批量转池请求"""
     ids: List[int] = Field(..., description="Team ID 列表")
     target_pool_type: Literal["normal", "welfare"] = Field(..., description="目标池类型")
+
+
+class ClearExperienceQueueRequest(BaseModel):
+    """清空体验组队队列请求"""
+    confirm: bool = Field(False, description="确认清空队列")
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -267,6 +272,54 @@ async def welfare_dashboard(
     except Exception as e:
         logger.exception("加载体验组队页面失败")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="加载体验组队页面失败，请稍后重试")
+
+
+@router.post("/welfare/queue/clear")
+@router.post("/experience/queue/clear")
+@router.post("/free/queue/clear")
+async def clear_welfare_queue(
+    payload: ClearExperienceQueueRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: dict = Depends(require_admin)
+):
+    """清空体验组队排队队列。"""
+    try:
+        if not payload.confirm:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"success": False, "error": "请确认后再清空队列"},
+            )
+
+        queued_stmt = select(func.count()).select_from(ExperienceQueue).where(ExperienceQueue.status == "queued")
+        queued_result = await db.execute(queued_stmt)
+        before_count = int(queued_result.scalar() or 0)
+
+        if before_count <= 0:
+            return JSONResponse(content={"success": True, "message": "队列为空，无需清空", "cleared": 0})
+
+        await db.execute(
+            update(ExperienceQueue)
+            .where(ExperienceQueue.status == "queued")
+            .values(status="cancelled", note="管理员清空队列", updated_at=get_now())
+        )
+        await db.commit()
+
+        logger.info("管理员清空体验组队队列: cleared=%s", before_count)
+
+        return JSONResponse(
+            content={
+                "success": True,
+                "message": f"已清空队列（{before_count} 条）",
+                "cleared": before_count,
+            }
+        )
+    except Exception:
+        logger.exception("管理员清空体验组队队列失败")
+        await db.rollback()
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"success": False, "error": "清空失败，请稍后重试"},
+        )
 
 
 @router.post("/welfare/code/generate")

@@ -26,6 +26,107 @@
     }
   }
 
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function escapeForHtml(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function renderMarkdownSafe(markdownText) {
+    const escaped = escapeForHtml(markdownText || '');
+    const lines = escaped.split(/\r?\n/);
+    let html = '';
+    let inList = false;
+
+    const applyInline = (line) => line
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+
+      if (!line) {
+        if (inList) {
+          html += '</ul>';
+          inList = false;
+        }
+        continue;
+      }
+
+      const heading = line.match(/^(#{1,3})\s+(.*)$/);
+      if (heading) {
+        if (inList) {
+          html += '</ul>';
+          inList = false;
+        }
+        const level = heading[1].length;
+        html += `<h${level}>${applyInline(heading[2])}</h${level}>`;
+        continue;
+      }
+
+      const bullet = line.match(/^[-*]\s+(.*)$/);
+      if (bullet) {
+        if (!inList) {
+          html += '<ul>';
+          inList = true;
+        }
+        html += `<li>${applyInline(bullet[1])}</li>`;
+        continue;
+      }
+
+      if (inList) {
+        html += '</ul>';
+        inList = false;
+      }
+      html += `<p>${applyInline(line)}</p>`;
+    }
+
+    if (inList) html += '</ul>';
+    return html || '<p>暂无公告内容</p>';
+  }
+
+  function initAnnouncementModal() {
+    const announcement = window.EXPERIENCE_ANNOUNCEMENT || {};
+    if (!announcement.enabled || !announcement.markdown || !String(announcement.markdown).trim()) {
+      return;
+    }
+
+    const modal = document.getElementById('announcementModal');
+    const content = document.getElementById('announcementContent');
+    const closeBtn = document.getElementById('announcementCloseBtn');
+    const confirmBtn = document.getElementById('announcementConfirmBtn');
+    const backdrop = document.getElementById('announcementBackdrop');
+
+    if (!modal || !content) return;
+
+    content.innerHTML = renderMarkdownSafe(String(announcement.markdown));
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+
+    const closeModal = () => {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (confirmBtn) confirmBtn.addEventListener('click', closeModal);
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+  }
+
   function formatTime(sec) {
     const s = Math.max(0, Number(sec || 0));
     const mm = String(Math.floor(s / 60)).padStart(2, '0');
@@ -42,15 +143,6 @@
     } catch (_) {
       return '-';
     }
-  }
-
-  function escapeHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
   }
 
   function setResultStyle(type) {
@@ -266,6 +358,7 @@
   });
 
   // 初始加载 + 实时刷新
+  initAnnouncementModal();
   refreshSpots();
   refreshActiveList();
   refreshQueueList();

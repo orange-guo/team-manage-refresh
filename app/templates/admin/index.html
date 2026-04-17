@@ -424,6 +424,12 @@
                 </div>
             </form>
 
+            {% if active_page == "welfare" %}
+            <button type="button" id="btnClearExperienceQueue" class="btn btn-danger">
+                <i data-lucide="list-x" style="width: 16px; height: 16px;"></i> 清空排队队列
+            </button>
+            {% endif %}
+
             <!-- 列设置 -->
             <!-- 列设置 -->
 <div class="dropdown-wrapper">
@@ -829,7 +835,31 @@
         document.getElementById('btnBatchPushCliproxyapi')?.addEventListener('click', handleBatchPushCliproxyapi);
         document.getElementById('btnBatchDelete')?.addEventListener('click', handleBatchDelete);
         document.getElementById('btnBatchTransferPool')?.addEventListener('click', handleBatchTransferPool);
+        document.getElementById('btnClearExperienceQueue')?.addEventListener('click', handleClearExperienceQueue);
     });
+
+    async function handleClearExperienceQueue() {
+        const confirmText = '确定清空体验组队的全部排队记录吗？该操作不可撤销。';
+        if (!confirm(confirmText)) return;
+
+        try {
+            showToast('正在清空队列...', 'info');
+            const response = await fetch('/admin/free/queue/clear', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ confirm: true })
+            });
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                showToast(data.message || '队列已清空', 'success');
+            } else {
+                showToast(data.error || '清空队列失败', 'error');
+            }
+        } catch (error) {
+            showToast('网络错误', 'error');
+        }
+    }
 
     async function enableDeviceAuth(teamId) {
         if (!confirm('确定要为该 Team 开启设备代码身份验证吗?')) {
