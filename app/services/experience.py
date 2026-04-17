@@ -139,7 +139,7 @@ class ExperienceService:
 
                 return {
                     "success": True,
-                    "message": f"拉入成功，{self.duration_minutes} 分钟后自动移出",
+                    "message": f"拉入成功，倒计时已开始（{self.duration_minutes} 分钟后自动踢出）",
                     "already_active": False,
                     "team_info": {
                         "team_id": team.id,
