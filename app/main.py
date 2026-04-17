@@ -228,22 +228,23 @@ async def scheduled_periodic_team_status_sync():
 
 
 async def scheduled_experience_auto_remove():
-    """定时清理到期体验组队记录并自动移出邮箱。"""
+    """定时处理体验组队：先踢出到期，再按队列顺序补位。"""
     try:
         async with AsyncSessionLocal() as session:
-            stats = await experience_service.cleanup_expired_assignments(
-                session,
-                limit=EXPERIENCE_AUTO_REMOVE_BATCH_SIZE,
-            )
-            if stats.get("processed", 0) > 0:
+            stats = await experience_service.run_scheduled_tick(session)
+            if (stats.get("expired_processed", 0) > 0) or (stats.get("queue_processed", 0) > 0):
                 logger.info(
-                    "体验组队自动移出完成: processed=%s removed=%s failed=%s",
-                    stats.get("processed", 0),
-                    stats.get("removed", 0),
-                    stats.get("failed", 0),
+                    "体验组队调度完成: expired(processed=%s removed=%s failed=%s) queue(processed=%s assigned=%s failed=%s still=%s)",
+                    stats.get("expired_processed", 0),
+                    stats.get("expired_removed", 0),
+                    stats.get("expired_failed", 0),
+                    stats.get("queue_processed", 0),
+                    stats.get("queue_assigned", 0),
+                    stats.get("queue_failed", 0),
+                    stats.get("queue_still", 0),
                 )
     except Exception as e:
-        logger.error(f"体验组队自动移出任务执行失败: {e}")
+        logger.error(f"体验组队调度任务执行失败: {e}")
 
 
 @asynccontextmanager
