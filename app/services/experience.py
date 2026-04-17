@@ -69,6 +69,39 @@ class ExperienceService:
 
         return total
 
+    async def get_active_entries(self, db_session: AsyncSession) -> Dict[str, Any]:
+        """获取当前体验池中已加入邮箱（公开展示用）"""
+        now = get_now()
+        stmt = (
+            select(ExperienceAssignment, Team)
+            .join(Team, Team.id == ExperienceAssignment.team_id)
+            .where(
+                ExperienceAssignment.status == "active",
+                ExperienceAssignment.expires_at > now,
+            )
+            .order_by(ExperienceAssignment.expires_at.asc(), ExperienceAssignment.id.asc())
+        )
+        result = await db_session.execute(stmt)
+        rows = result.all()
+
+        items = []
+        for assignment, team in rows:
+            items.append(
+                {
+                    "email": assignment.email,
+                    "team_id": assignment.team_id,
+                    "team_email": team.email if team else None,
+                    "expires_at": assignment.expires_at.isoformat(),
+                    "seconds_remaining": self._remaining_seconds(assignment.expires_at, now),
+                }
+            )
+
+        return {
+            "count": len(items),
+            "items": items,
+            "server_time": now.isoformat(),
+        }
+
     async def join_experience(self, email: str, db_session: AsyncSession) -> Dict[str, Any]:
         """体验组队入口：自动选择体验池账号，拉人并返回倒计时"""
         normalized_email = self._normalize_email(email)

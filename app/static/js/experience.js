@@ -8,6 +8,9 @@
   const teamInfo = document.getElementById('teamInfo');
   const countdown = document.getElementById('countdown');
   const remainingSpots = document.getElementById('remainingSpots');
+  const activeListWrap = document.getElementById('activeListWrap');
+  const activeListRows = document.getElementById('activeListRows');
+  const activeListEmpty = document.getElementById('activeListEmpty');
 
   let timer = null;
 
@@ -23,6 +26,15 @@
     const mm = String(Math.floor(s / 60)).padStart(2, '0');
     const ss = String(s % 60).padStart(2, '0');
     return `${mm}:${ss}`;
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function setResultStyle(type) {
@@ -88,6 +100,54 @@
     }
   }
 
+  function renderActiveList(items) {
+    if (!activeListRows || !activeListWrap || !activeListEmpty) return;
+
+    if (!items || items.length === 0) {
+      activeListRows.innerHTML = '';
+      activeListWrap.style.display = 'none';
+      activeListEmpty.style.display = 'block';
+      return;
+    }
+
+    activeListWrap.style.display = 'block';
+    activeListEmpty.style.display = 'none';
+
+    activeListRows.innerHTML = items.map((item) => {
+      const email = escapeHtml(item.email || '');
+      const teamEmail = escapeHtml(item.team_email || '-');
+      const secs = Math.max(0, Number(item.seconds_remaining || 0));
+      return `
+        <div class="active-list-row">
+          <span>${email}</span>
+          <span>${teamEmail}</span>
+          <span class="active-countdown" data-seconds="${secs}">${formatTime(secs)}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function tickActiveCountdowns() {
+    document.querySelectorAll('.active-countdown[data-seconds]').forEach((el) => {
+      const curr = Math.max(0, Number(el.getAttribute('data-seconds') || 0));
+      const next = Math.max(0, curr - 1);
+      el.setAttribute('data-seconds', String(next));
+      el.textContent = formatTime(next);
+    });
+  }
+
+  async function refreshActiveList() {
+    try {
+      const res = await fetch('/free/active', { method: 'GET' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || !data.success) return;
+      renderActiveList(Array.isArray(data.items) ? data.items : []);
+    } catch (_) {
+      // 静默
+    }
+  }
+
   async function submit(email) {
     const res = await fetch('/free/join', {
       method: 'POST',
@@ -110,6 +170,7 @@
 
     showSuccess(data);
     refreshSpots();
+    refreshActiveList();
   }
 
   form?.addEventListener('submit', async (e) => {
@@ -132,6 +193,10 @@
     }
   });
 
-  // 初次刷新一次席位
+  // 初始加载 + 实时刷新
   refreshSpots();
+  refreshActiveList();
+  setInterval(refreshSpots, 15000);
+  setInterval(refreshActiveList, 5000);
+  setInterval(tickActiveCountdowns, 1000);
 })();

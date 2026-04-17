@@ -9,6 +9,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/css/user.css">
+    <style>
+        .active-list-wrap {
+            margin-top: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(2, 6, 23, 0.35);
+        }
+        .active-list-header,
+        .active-list-row {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr 0.8fr;
+            gap: 10px;
+            padding: 10px 14px;
+            align-items: center;
+            font-size: 14px;
+        }
+        .active-list-header {
+            font-weight: 600;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(30, 41, 59, 0.35);
+        }
+        .active-list-row {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            color: #e2e8f0;
+        }
+        .active-list-row:last-child {
+            border-bottom: none;
+        }
+        .active-countdown {
+            font-family: 'Sora', sans-serif;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        .active-empty {
+            margin-top: 10px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
     <div class="bg-scene">
@@ -69,6 +110,20 @@
                             <div id="countdown" style="margin-top:8px; font-family: 'Sora', sans-serif; font-size: 18px;"></div>
                         </div>
                     </div>
+
+                    <div class="panel-head" style="margin-top:22px;">
+                        <h2>已加入邮箱（公开）</h2>
+                        <p>下方实时显示当前已加入邮箱与剩余倒计时。</p>
+                    </div>
+                    <div class="active-list-wrap" id="activeListWrap" style="display:none;">
+                        <div class="active-list-header">
+                            <span>邮箱</span>
+                            <span>所在账号</span>
+                            <span>倒计时</span>
+                        </div>
+                        <div id="activeListRows"></div>
+                    </div>
+                    <div id="activeListEmpty" class="active-empty">当前暂无已加入邮箱</div>
                 </section>
             </main>
         </div>
