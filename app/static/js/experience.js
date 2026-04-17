@@ -8,9 +8,14 @@
   const teamInfo = document.getElementById('teamInfo');
   const countdown = document.getElementById('countdown');
   const remainingSpots = document.getElementById('remainingSpots');
+
   const activeListWrap = document.getElementById('activeListWrap');
   const activeListRows = document.getElementById('activeListRows');
   const activeListEmpty = document.getElementById('activeListEmpty');
+
+  const queueListWrap = document.getElementById('queueListWrap');
+  const queueListRows = document.getElementById('queueListRows');
+  const queueListEmpty = document.getElementById('queueListEmpty');
 
   let timer = null;
 
@@ -26,6 +31,17 @@
     const mm = String(Math.floor(s / 60)).padStart(2, '0');
     const ss = String(s % 60).padStart(2, '0');
     return `${mm}:${ss}`;
+  }
+
+  function formatDateTime(value) {
+    if (!value) return '-';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return '-';
+    try {
+      return d.toLocaleString('zh-CN', { hour12: false });
+    } catch (_) {
+      return '-';
+    }
   }
 
   function escapeHtml(str) {
@@ -55,7 +71,7 @@
     }
   }
 
-  function showSuccess(payload) {
+  function showActiveResult(payload) {
     clearTimer();
     setResultStyle('success');
 
@@ -72,11 +88,22 @@
       remain -= 1;
       if (remain <= 0) {
         clearTimer();
-        countdown.textContent = '倒计时结束，系统将自动移出（最多约 1 分钟内完成）';
+        countdown.textContent = '倒计时结束，系统将自动移出并按队列顺序补位（最多约 1 分钟内完成）';
         return;
       }
       countdown.textContent = `剩余时间：${formatTime(remain)}`;
     }, 1000);
+  }
+
+  function showQueuedResult(payload) {
+    clearTimer();
+    setResultStyle('success');
+
+    resultMessage.textContent = payload.message || '已加入排队';
+
+    const pos = Number(payload.queue_position || 0);
+    teamInfo.textContent = pos > 0 ? `当前排位：第 ${pos} 位` : '当前已在队列中';
+    countdown.textContent = '满位释放后会自动补位，无需重复提交。';
   }
 
   function showError(message) {
@@ -127,6 +154,33 @@
     }).join('');
   }
 
+  function renderQueueList(items) {
+    if (!queueListRows || !queueListWrap || !queueListEmpty) return;
+
+    if (!items || items.length === 0) {
+      queueListRows.innerHTML = '';
+      queueListWrap.style.display = 'none';
+      queueListEmpty.style.display = 'block';
+      return;
+    }
+
+    queueListWrap.style.display = 'block';
+    queueListEmpty.style.display = 'none';
+
+    queueListRows.innerHTML = items.map((item) => {
+      const pos = Number(item.position || 0);
+      const email = escapeHtml(item.email || '');
+      const queuedAt = escapeHtml(formatDateTime(item.queued_at));
+      return `
+        <div class="queue-list-row">
+          <span>第 ${pos || '-'} 位</span>
+          <span>${email}</span>
+          <span>${queuedAt}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
   function tickActiveCountdowns() {
     document.querySelectorAll('.active-countdown[data-seconds]').forEach((el) => {
       const curr = Math.max(0, Number(el.getAttribute('data-seconds') || 0));
@@ -143,6 +197,18 @@
       const data = await res.json();
       if (!data || !data.success) return;
       renderActiveList(Array.isArray(data.items) ? data.items : []);
+    } catch (_) {
+      // 静默
+    }
+  }
+
+  async function refreshQueueList() {
+    try {
+      const res = await fetch('/free/queue', { method: 'GET' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || !data.success) return;
+      renderQueueList(Array.isArray(data.items) ? data.items : []);
     } catch (_) {
       // 静默
     }
@@ -168,9 +234,15 @@
       return;
     }
 
-    showSuccess(data);
+    if (data.status === 'queued') {
+      showQueuedResult(data);
+    } else {
+      showActiveResult(data);
+    }
+
     refreshSpots();
     refreshActiveList();
+    refreshQueueList();
   }
 
   form?.addEventListener('submit', async (e) => {
@@ -196,7 +268,10 @@
   // 初始加载 + 实时刷新
   refreshSpots();
   refreshActiveList();
+  refreshQueueList();
+
   setInterval(refreshSpots, 15000);
   setInterval(refreshActiveList, 5000);
+  setInterval(refreshQueueList, 5000);
   setInterval(tickActiveCountdowns, 1000);
 })();

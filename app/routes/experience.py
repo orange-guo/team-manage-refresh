@@ -73,6 +73,20 @@ async def get_active_entries(db: AsyncSession = Depends(get_db)):
         )
 
 
+@router.get("/queue")
+async def get_queue_entries(db: AsyncSession = Depends(get_db)):
+    """返回当前排队列表"""
+    try:
+        result = await experience_service.get_queue_entries(db)
+        return {"success": True, **result}
+    except Exception:
+        logger.exception("获取体验组队排队列表失败")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"success": False, "error": "获取排队列表失败，请稍后重试"},
+        )
+
+
 @router.post("/join")
 async def join_experience(
     payload: ExperienceJoinRequest,

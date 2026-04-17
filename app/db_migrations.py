@@ -207,6 +207,38 @@ def run_auto_migration():
             ON experience_assignments (team_id, status)
         """)
 
+        if not table_exists(cursor, "experience_queue"):
+            logger.info("创建 experience_queue 表")
+            cursor.execute("""
+                CREATE TABLE experience_queue (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    email VARCHAR(255) NOT NULL,
+                    status VARCHAR(20) NOT NULL DEFAULT 'queued',
+                    assigned_team_id INTEGER,
+                    assignment_id INTEGER,
+                    created_at DATETIME,
+                    updated_at DATETIME,
+                    assigned_at DATETIME,
+                    note TEXT,
+                    FOREIGN KEY(assigned_team_id) REFERENCES teams(id) ON DELETE SET NULL,
+                    FOREIGN KEY(assignment_id) REFERENCES experience_assignments(id) ON DELETE SET NULL
+                )
+            """)
+            migrations_applied.append("experience_queue")
+
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_experience_queue_email_status
+            ON experience_queue (email, status)
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_experience_queue_status_id
+            ON experience_queue (status, id)
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_experience_queue_created
+            ON experience_queue (created_at)
+        """)
+
         # 提交更改
         conn.commit()
         

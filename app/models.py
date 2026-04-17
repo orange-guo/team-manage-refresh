@@ -41,6 +41,7 @@ class Team(Base):
     redemption_records = relationship("RedemptionRecord", back_populates="team", cascade="all, delete-orphan")
     email_mappings = relationship("TeamEmailMapping", back_populates="team", cascade="all, delete-orphan")
     experience_assignments = relationship("ExperienceAssignment", back_populates="team", cascade="all, delete-orphan")
+    experience_queue_items = relationship("ExperienceQueue", back_populates="assigned_team")
 
     # 索引
     __table_args__ = (
@@ -115,6 +116,31 @@ class ExperienceAssignment(Base):
         Index("idx_experience_email_status", "email", "status"),
         Index("idx_experience_expires_status", "expires_at", "status"),
         Index("idx_experience_team_status", "team_id", "status"),
+    )
+
+
+class ExperienceQueue(Base):
+    """体验组队排队记录表"""
+    __tablename__ = "experience_queue"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    email = Column(String(255), nullable=False, comment="用户邮箱(统一存小写)")
+    status = Column(String(20), nullable=False, default="queued", comment="状态: queued/assigned/cancelled/expired/failed")
+    assigned_team_id = Column(Integer, ForeignKey("teams.id", ondelete="SET NULL"), comment="被分配到的 Team ID")
+    assignment_id = Column(Integer, ForeignKey("experience_assignments.id", ondelete="SET NULL"), comment="对应体验记录 ID")
+    created_at = Column(DateTime, default=get_now, comment="入队时间")
+    updated_at = Column(DateTime, default=get_now, onupdate=get_now, comment="更新时间")
+    assigned_at = Column(DateTime, comment="分配时间")
+    note = Column(Text, comment="备注/失败原因")
+
+    # 关系
+    assigned_team = relationship("Team", back_populates="experience_queue_items")
+
+    # 索引
+    __table_args__ = (
+        Index("idx_experience_queue_email_status", "email", "status"),
+        Index("idx_experience_queue_status_id", "status", "id"),
+        Index("idx_experience_queue_created", "created_at"),
     )
 
 

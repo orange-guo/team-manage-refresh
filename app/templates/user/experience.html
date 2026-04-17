@@ -17,10 +17,26 @@
             overflow: hidden;
             background: rgba(2, 6, 23, 0.35);
         }
+        .queue-list-wrap {
+            margin-top: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(2, 6, 23, 0.35);
+        }
         .active-list-header,
         .active-list-row {
             display: grid;
             grid-template-columns: 1.8fr 1.2fr 0.8fr;
+            gap: 10px;
+            padding: 10px 14px;
+            align-items: center;
+            font-size: 14px;
+        }
+        .queue-list-header,
+        .queue-list-row {
+            display: grid;
+            grid-template-columns: 0.6fr 1.8fr 1.2fr;
             gap: 10px;
             padding: 10px 14px;
             align-items: center;
@@ -32,11 +48,24 @@
             border-bottom: 1px solid rgba(148, 163, 184, 0.2);
             background: rgba(30, 41, 59, 0.35);
         }
+        .queue-list-header {
+            font-weight: 600;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(30, 41, 59, 0.35);
+        }
         .active-list-row {
             border-bottom: 1px solid rgba(148, 163, 184, 0.12);
             color: #e2e8f0;
         }
+        .queue-list-row {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            color: #e2e8f0;
+        }
         .active-list-row:last-child {
+            border-bottom: none;
+        }
+        .queue-list-row:last-child {
             border-bottom: none;
         }
         .active-countdown {
@@ -45,6 +74,11 @@
             font-weight: 600;
         }
         .active-empty {
+            margin-top: 10px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .queue-empty {
             margin-top: 10px;
             color: #94a3b8;
             font-size: 14px;
@@ -98,7 +132,7 @@
                         <i class="fa-solid fa-circle-info info-icon"></i>
                         <div>
                             <div>拉入成功后，下方会立即显示 10:00 倒计时提示。</div>
-                            <div>倒计时结束后系统自动踢出（最多约 1 分钟内完成）。</div>
+                            <div>当前满位时会自动加入队列；倒计时结束后先踢出，再按排队顺序补位。</div>
                         </div>
                     </div>
 
@@ -124,6 +158,20 @@
                         <div id="activeListRows"></div>
                     </div>
                     <div id="activeListEmpty" class="active-empty">当前暂无已加入邮箱</div>
+
+                    <div class="panel-head" style="margin-top:22px;">
+                        <h2>排队列表（公开）</h2>
+                        <p>满位时自动入队，系统按队列顺序依次补位。</p>
+                    </div>
+                    <div class="queue-list-wrap" id="queueListWrap" style="display:none;">
+                        <div class="queue-list-header">
+                            <span>排位</span>
+                            <span>邮箱</span>
+                            <span>排队时间</span>
+                        </div>
+                        <div id="queueListRows"></div>
+                    </div>
+                    <div id="queueListEmpty" class="queue-empty">当前暂无排队邮箱</div>
                 </section>
             </main>
         </div>
