@@ -217,6 +217,7 @@ async def admin_dashboard(
 
 @router.get("/welfare", response_class=HTMLResponse)
 @router.get("/experience", response_class=HTMLResponse)
+@router.get("/free", response_class=HTMLResponse)
 async def welfare_dashboard(
     request: Request,
     page: int = 1,

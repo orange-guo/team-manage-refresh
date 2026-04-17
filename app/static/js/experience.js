@@ -77,7 +77,7 @@
 
   async function refreshSpots() {
     try {
-      const res = await fetch('/experience/spots', { method: 'GET' });
+      const res = await fetch('/free/spots', { method: 'GET' });
       if (!res.ok) return;
       const data = await res.json();
       if (data && data.success && typeof data.remaining_spots !== 'undefined') {
@@ -89,7 +89,7 @@
   }
 
   async function submit(email) {
-    const res = await fetch('/experience/join', {
+    const res = await fetch('/free/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })

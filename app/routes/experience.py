@@ -11,7 +11,7 @@ from app.services.experience import experience_service
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/experience", tags=["experience"])
+router = APIRouter(prefix="/free", tags=["experience"])
 
 
 class ExperienceJoinRequest(BaseModel):

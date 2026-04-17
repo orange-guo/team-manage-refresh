@@ -407,13 +407,13 @@
             </div>
 
             <!-- 搜索框 -->
-            <form action="{% if active_page == 'welfare' %}/admin/experience{% else %}/admin{% endif %}" method="get" class="search-form">
+            <form action="{% if active_page == 'welfare' %}/admin/free{% else %}/admin{% endif %}" method="get" class="search-form">
                 <div class="input-group-clean">
                     <i data-lucide="search" style="width: 14px; height: 14px;"></i>
                     <input type="text" name="search" value="{{ search or '' }}" placeholder="搜索邮箱/Account ID..."
                         style="width: 200px;">
                     {% if search %}
-                    <a href="{% if active_page == 'welfare' %}/admin/experience{% else %}/admin{% endif %}" title="清除搜索">
+                    <a href="{% if active_page == 'welfare' %}/admin/free{% else %}/admin{% endif %}" title="清除搜索">
                         <i data-lucide="x-circle" style="width: 14px; height: 14px;"></i>
                     </a>
                     {% endif %}
@@ -1286,7 +1286,7 @@
         }
     });
 
-    const dashboardBasePath = "{{ '/admin/experience' if active_page == 'welfare' else '/admin' }}";
+    const dashboardBasePath = "{{ '/admin/free' if active_page == 'welfare' else '/admin' }}";
 
     function filterByStatus(status) {
         const url = new URL(window.location.href);
