@@ -18,7 +18,7 @@ class ExperienceService:
 
     def __init__(self):
         self.team_service = TeamService()
-        self.max_members_per_team = 4
+        self.max_members_per_team = 5
         self.duration_minutes = 10
 
     @staticmethod
@@ -48,7 +48,7 @@ class ExperienceService:
         return result.scalar_one_or_none()
 
     async def get_total_available_slots(self, db_session: AsyncSession) -> int:
-        """获取体验池剩余席位总数（单账号最多按 4 人计算）"""
+        """获取体验池剩余席位总数（单账号最多按 5 人计算）"""
         now = get_now()
         stmt = (
             select(Team)
