@@ -844,8 +844,8 @@
             mountFloatingDropdownsToBody();
         }
 
-        // Init Column Toggler
-        initColumnToggler('.data-table', 'team_list_columns');
+        // Init Column Toggler（升级 key，避免旧列索引缓存导致新列被错位隐藏）
+        initColumnToggler('.data-table', 'team_list_columns_v2');
 
         // 渲染时长列并每分钟刷新
         renderRelativeTimes();
