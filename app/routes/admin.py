@@ -988,6 +988,27 @@ async def push_team_to_cliproxyapi(
         )
 
 
+@router.post("/teams/{team_id}/refresh-cliproxyapi-quota")
+async def refresh_team_cliproxyapi_quota(
+    team_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: dict = Depends(require_admin)
+):
+    """刷新单个 Team 的配额信息（通过 CliproxyAPI management api-call）。"""
+    try:
+        logger.info("管理员刷新 Team %s 的 CliproxyAPI 配额", team_id)
+        result = await cliproxyapi_service.refresh_team_quota(team_id, db)
+        if not result.get("success"):
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=result)
+        return JSONResponse(content=result)
+    except Exception as e:
+        logger.error("刷新 Team %s 配额失败: %s", team_id, e)
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"success": False, "error": str(e)}
+        )
+
+
 # ==================== 批量操作路由 ====================
 
 @router.post("/teams/batch-push-cliproxyapi")

@@ -2,6 +2,7 @@ import json
 import logging
 import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 from urllib.parse import urlparse
 
@@ -26,9 +27,29 @@ class CliproxyapiConfig:
     proxy: Optional[str] = None
 
 
+@dataclass
+class TeamQuotaSnapshot:
+    status: str
+    message: str
+    codex_total_usd: Optional[float] = None
+    codex_used_usd: Optional[float] = None
+    codex_remaining_usd: Optional[float] = None
+    codex_reset_at: Optional[str] = None
+    codex_plan: Optional[str] = None
+    raw: Optional[Dict[str, Any]] = None
+
+
 class CliproxyapiService:
     MANAGEMENT_PREFIX = "/v0/management"
     DEFAULT_TIMEOUT = 20.0
+    CODEX_USAGE_URL = "https://chatgpt.com/backend-api/wham/usage"
+    CODEX_USAGE_HEADERS = {
+        "Content-Type": "application/json",
+        "User-Agent": "codex_cli_rs/0.76.0 (Debian 13.0.0; x86_64)",
+        "Origin": "https://chatgpt.com",
+        "Referer": "https://chatgpt.com/codex",
+        "Accept": "*/*",
+    }
 
     @staticmethod
     def normalize_base_url(base_url: Optional[str]) -> str:
@@ -197,6 +218,299 @@ class CliproxyapiService:
             headers={"Content-Type": "application/json"},
         )
         response.raise_for_status()
+
+    @staticmethod
+    def _safe_float(value: Any) -> Optional[float]:
+        if value is None:
+            return None
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _safe_datetime_iso(value: Any) -> Optional[str]:
+        if not value:
+            return None
+        if isinstance(value, datetime):
+            dt = value
+        elif isinstance(value, (int, float)):
+            try:
+                dt = datetime.fromtimestamp(float(value), tz=timezone.utc)
+            except Exception:
+                return None
+        elif isinstance(value, str):
+            raw = value.strip()
+            if not raw:
+                return None
+            if raw.endswith("Z"):
+                raw = raw[:-1] + "+00:00"
+            try:
+                dt = datetime.fromisoformat(raw)
+            except Exception:
+                return None
+        else:
+            return None
+
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc).isoformat()
+
+    def _extract_codex_quota_snapshot(self, body_text: str) -> TeamQuotaSnapshot:
+        if not body_text:
+            return TeamQuotaSnapshot(status="error", message="额度接口返回空内容")
+
+        try:
+            data = json.loads(body_text)
+        except Exception:
+            return TeamQuotaSnapshot(status="error", message="额度接口返回格式无法解析")
+
+        windows = []
+        if isinstance(data, dict):
+            maybe_windows = data.get("windows") or data.get("data") or data.get("usage_windows")
+            if isinstance(maybe_windows, list):
+                windows = maybe_windows
+
+        if not windows:
+            return TeamQuotaSnapshot(
+                status="error",
+                message="未获取到额度窗口数据",
+                raw=data if isinstance(data, dict) else None,
+            )
+
+        target = None
+        for item in windows:
+            if not isinstance(item, dict):
+                continue
+            mode = str(item.get("mode") or "").lower()
+            if mode in {"codex", "max"}:
+                target = item
+                break
+        if target is None:
+            target = windows[0] if isinstance(windows[0], dict) else None
+
+        if target is None:
+            return TeamQuotaSnapshot(
+                status="error",
+                message="额度窗口数据结构异常",
+                raw=data if isinstance(data, dict) else None,
+            )
+
+        total = self._safe_float(target.get("total_amount_usd") or target.get("total") or target.get("limit"))
+        used = self._safe_float(
+            target.get("consumed_amount_usd")
+            or target.get("consumed")
+            or target.get("used")
+            or target.get("usage")
+        )
+        remaining = self._safe_float(
+            target.get("remaining_amount_usd")
+            or target.get("remaining")
+            or target.get("balance")
+        )
+
+        if remaining is None and total is not None and used is not None:
+            remaining = max(total - used, 0.0)
+
+        reset_at = self._safe_datetime_iso(
+            target.get("resets_at")
+            or target.get("reset_at")
+            or target.get("resetsAt")
+            or target.get("resetAt")
+        )
+
+        plan = None
+        if isinstance(data, dict):
+            plan = data.get("plan_type") or data.get("plan")
+        plan = str(plan).strip() if plan else None
+
+        if total is None and used is None and remaining is None:
+            return TeamQuotaSnapshot(
+                status="error",
+                message="额度数据为空",
+                codex_reset_at=reset_at,
+                codex_plan=plan,
+                raw=data if isinstance(data, dict) else None,
+            )
+
+        return TeamQuotaSnapshot(
+            status="ok",
+            message="额度已更新",
+            codex_total_usd=total,
+            codex_used_usd=used,
+            codex_remaining_usd=remaining,
+            codex_reset_at=reset_at,
+            codex_plan=plan,
+            raw=data if isinstance(data, dict) else None,
+        )
+
+    async def _management_api_call(
+        self,
+        client: httpx.AsyncClient,
+        management_base_url: str,
+        *,
+        auth_index: str,
+        method: str,
+        url: str,
+        header: Optional[Dict[str, str]] = None,
+        data: str = "",
+    ) -> Dict[str, Any]:
+        payload = {
+            "authIndex": auth_index,
+            "method": method,
+            "url": url,
+            "header": header or {},
+            "data": data,
+        }
+        response = await client.post(f"{management_base_url}/api-call", json=payload)
+        response.raise_for_status()
+        parsed = response.json()
+        if not isinstance(parsed, dict):
+            raise ValueError("management api-call 返回格式异常")
+        return parsed
+
+    async def refresh_team_quota(self, team_id: int, db_session: AsyncSession) -> Dict[str, Any]:
+        config = await self._load_config(db_session)
+        if not config:
+            return {"success": False, "error": "请先在系统设置中填写 CliproxyAPI 地址和管理密钥"}
+
+        if not self.is_valid_base_url(config.base_url):
+            return {"success": False, "error": "CliproxyAPI 地址格式错误，仅支持 http/https"}
+
+        result = await db_session.execute(select(Team).where(Team.id == team_id))
+        team = result.scalar_one_or_none()
+        if not team:
+            return {"success": False, "error": "Team 不存在"}
+
+        email = str(team.email or "").strip()
+        if not email:
+            return {"success": False, "error": "Team 缺少邮箱，无法匹配远端认证文件"}
+
+        filename = self._build_filename(team)
+        management_base_url = f"{config.base_url}{self.MANAGEMENT_PREFIX}"
+        headers = {
+            "Authorization": f"Bearer {config.api_key}",
+            "Accept": "application/json",
+        }
+
+        try:
+            async with httpx.AsyncClient(
+                timeout=max(self.DEFAULT_TIMEOUT, 30.0),
+                headers=headers,
+                proxy=config.proxy,
+            ) as client:
+                listing = await self._list_remote_files(client, management_base_url)
+                remote_files = listing.get("files") or []
+                remote_entry = next(
+                    (
+                        item
+                        for item in remote_files
+                        if isinstance(item, dict)
+                        and str(item.get("name") or "").strip() == filename
+                    ),
+                    None,
+                )
+
+                if remote_entry is None:
+                    return {
+                        "success": False,
+                        "error": f"CliproxyAPI 未找到对应认证文件：{filename}，请先推送",
+                        "email": email,
+                        "filename": filename,
+                    }
+
+                auth_index = str(remote_entry.get("auth_index") or "").strip()
+                if not auth_index:
+                    return {
+                        "success": False,
+                        "error": f"远端认证文件缺少 auth_index：{filename}",
+                        "email": email,
+                        "filename": filename,
+                    }
+
+                account_id = str(team.account_id or "").strip()
+                if not account_id:
+                    return {
+                        "success": False,
+                        "error": "当前 Team 缺少 account_id，无法查询 Codex 额度",
+                        "email": email,
+                        "filename": filename,
+                    }
+
+                request_headers = dict(self.CODEX_USAGE_HEADERS)
+                request_headers["Authorization"] = "Bearer $TOKEN$"
+                request_headers["Chatgpt-Account-Id"] = account_id
+
+                call_result = await self._management_api_call(
+                    client,
+                    management_base_url,
+                    auth_index=auth_index,
+                    method="GET",
+                    url=self.CODEX_USAGE_URL,
+                    header=request_headers,
+                )
+
+                status_code = int(call_result.get("status_code") or 0)
+                body_text = str(call_result.get("body") or "")
+
+                if status_code < 200 or status_code >= 300:
+                    trimmed = body_text.strip()
+                    if len(trimmed) > 220:
+                        trimmed = trimmed[:220] + "..."
+                    return {
+                        "success": False,
+                        "error": f"额度接口返回 {status_code}: {trimmed or '请求失败'}",
+                        "email": email,
+                        "filename": filename,
+                        "status_code": status_code,
+                    }
+
+                snapshot = self._extract_codex_quota_snapshot(body_text)
+                if snapshot.status != "ok":
+                    return {
+                        "success": False,
+                        "error": snapshot.message,
+                        "email": email,
+                        "filename": filename,
+                    }
+
+                return {
+                    "success": True,
+                    "message": snapshot.message,
+                    "email": email,
+                    "filename": filename,
+                    "quota": {
+                        "status": snapshot.status,
+                        "codex_total_usd": snapshot.codex_total_usd,
+                        "codex_used_usd": snapshot.codex_used_usd,
+                        "codex_remaining_usd": snapshot.codex_remaining_usd,
+                        "codex_reset_at": snapshot.codex_reset_at,
+                        "codex_plan": snapshot.codex_plan,
+                    },
+                }
+        except httpx.HTTPStatusError as exc:
+            response_text = ""
+            try:
+                response_text = exc.response.text.strip()
+            except Exception:
+                response_text = ""
+
+            logger.error(
+                "刷新 Team %s 额度失败，status=%s, body=%s",
+                team_id,
+                getattr(exc.response, "status_code", "unknown"),
+                response_text,
+            )
+            error_message = response_text or f"HTTP {getattr(exc.response, 'status_code', 'unknown')}"
+            return {
+                "success": False,
+                "error": f"CliproxyAPI 请求失败: {error_message}",
+                "email": email,
+                "filename": filename,
+            }
+        except Exception as exc:
+            logger.error("刷新 Team %s 额度异常: %s", team_id, exc)
+            return {"success": False, "error": f"刷新额度失败: {str(exc)}", "email": email, "filename": filename}
 
     async def push_team_auth_file(self, team_id: int, db_session: AsyncSession) -> Dict[str, Any]:
         config = await self._load_config(db_session)

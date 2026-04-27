@@ -272,37 +272,77 @@
         }
     }
 
-    /* 长期组队：白蓝主题 + 卡片列表 */
+    /* 长期组队：按参考图做的浅色磨砂卡片风 */
     body.admin-theme.longterm-dashboard-light {
-        --primary: #2563eb;
-        --primary-hover: #1d4ed8;
-        --primary-soft: #eaf2ff;
-        --bg-main: #eef5ff;
-        --bg-surface: #ffffff;
-        --text-main: #0f172a;
-        --text-muted: #4b6280;
-        --text-dim: #7f93ad;
-        --border-base: #d8e6fb;
-        --grid-color: rgba(59, 130, 246, 0.08);
-        --menu-active-start: #eaf2ff;
-        --menu-active-end: #dbeafe;
-        --button-gradient-start: #3b82f6;
-        --button-gradient-end: #2563eb;
-        --button-gradient-start-hover: #60a5fa;
-        --button-gradient-end-hover: #3b82f6;
-        --menu-active-text: #1e3a8a;
-        --menu-active-shadow: rgba(37, 99, 235, 0.2);
-        --menu-hover-bg: rgba(59, 130, 246, 0.08);
-        --status-banned-text: #5b6f89;
-        --toast-bg: #ffffff;
-        --toast-border: #d5e4fb;
-        --surface-elev-1: color-mix(in srgb, var(--bg-surface) 94%, #edf4ff 6%);
-        --table-row-hover: color-mix(in srgb, var(--primary-soft) 62%, var(--bg-surface) 38%);
-        background: radial-gradient(120% 120% at 0% 0%, #f7fbff 0%, #eef5ff 54%, #e3efff 100%);
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-soft: #eef2ff;
+        --bg-main: #f5f7ff;
+        --bg-surface: rgba(255, 255, 255, 0.9);
+        --text-main: #111827;
+        --text-muted: #5b667a;
+        --text-dim: #8a93a6;
+        --border-base: #d9e2f4;
+        --grid-color: rgba(79, 70, 229, 0.08);
+        --menu-active-start: #eef2ff;
+        --menu-active-end: #e5e7ff;
+        --button-gradient-start: #6366f1;
+        --button-gradient-end: #4f46e5;
+        --button-gradient-start-hover: #818cf8;
+        --button-gradient-end-hover: #6366f1;
+        --menu-active-text: #3730a3;
+        --menu-active-shadow: rgba(79, 70, 229, 0.2);
+        --menu-hover-bg: rgba(99, 102, 241, 0.09);
+        --status-banned-text: #6b7280;
+        --toast-bg: rgba(255, 255, 255, 0.96);
+        --toast-border: #dde3f3;
+        --surface-elev-1: rgba(255, 255, 255, 0.92);
+        --table-row-hover: rgba(238, 242, 255, 0.9);
+        background:
+            radial-gradient(1200px 560px at 8% -6%, rgba(139, 92, 246, 0.24), transparent 62%),
+            radial-gradient(980px 520px at 92% 8%, rgba(56, 189, 248, 0.2), transparent 60%),
+            linear-gradient(180deg, #f8faff 0%, #f1f5ff 52%, #eef3ff 100%);
+    }
+
+    body.admin-theme.longterm-dashboard-light .dashboard-card,
+    body.admin-theme.longterm-dashboard-light .stats-card,
+    body.admin-theme.longterm-dashboard-light .toolbar,
+    body.admin-theme.longterm-dashboard-light .modal-content,
+    body.admin-theme.longterm-dashboard-light .table-container,
+    body.admin-theme.longterm-dashboard-light .batch-actions-group {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(208, 219, 243, 0.9);
+        box-shadow: 0 12px 34px rgba(79, 70, 229, 0.1);
     }
 
     body.admin-theme.longterm-dashboard-light .data-table th {
-        background: #f5f9ff;
+        background: rgba(245, 247, 255, 0.95);
+    }
+
+    body.admin-theme.longterm-dashboard-light .btn-primary {
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.28);
+    }
+
+    body.admin-theme.longterm-dashboard-light .status-badge.status-active {
+        background: #e8f7ef;
+        border-color: #c3e9d2;
+        color: #166534;
+    }
+
+    body.admin-theme.longterm-dashboard-light .status-badge.status-full {
+        background: #fff4d9;
+        border-color: #f5dfaa;
+        color: #92400e;
+    }
+
+    body.admin-theme.longterm-dashboard-light .status-badge.status-expired,
+    body.admin-theme.longterm-dashboard-light .status-badge.status-banned,
+    body.admin-theme.longterm-dashboard-light .status-badge.status-error {
+        background: #fdeaea;
+        border-color: #f6c9c9;
+        color: #991b1b;
     }
 
     .card-select-all {
@@ -325,11 +365,19 @@
     }
 
     .longterm-team-card {
-        background: var(--bg-surface);
-        border: 1px solid var(--border-base);
-        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(215, 225, 244, 0.95);
+        border-radius: 16px;
         padding: 0.95rem;
-        box-shadow: 0 8px 22px rgba(30, 64, 175, 0.08);
+        box-shadow: 0 14px 30px rgba(79, 70, 229, 0.12);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .longterm-team-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 36px rgba(79, 70, 229, 0.16);
     }
 
     .longterm-team-card-head {
@@ -377,6 +425,36 @@
         font-size: 0.86rem;
         color: var(--text-main);
         word-break: break-all;
+    }
+
+    .quota-chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 0.12rem 0.5rem;
+        font-size: 0.74rem;
+        font-weight: 600;
+        border: 1px solid var(--border-base);
+        background: #f8fbff;
+        color: #1f3f78;
+    }
+
+    .quota-chip-ok {
+        background: #e8f7ee;
+        border-color: #b9e2c8;
+        color: #166534;
+    }
+
+    .quota-chip-error {
+        background: #fdecec;
+        border-color: #f6c8c8;
+        color: #991b1b;
+    }
+
+    .quota-actions {
+        display: flex;
+        gap: 0.45rem;
+        flex-wrap: wrap;
     }
 
     @media (max-width: 640px) {
