@@ -6,7 +6,7 @@
 
 ### 一键部署
 ```bash
-git clone https://github.com/loLollipop/team-manage-refresh.git
+git clone https://github.com/550710418/team-manage-refresh.git
 cd team-manage-refresh
 cp .env.example .env
 docker compose up -d
