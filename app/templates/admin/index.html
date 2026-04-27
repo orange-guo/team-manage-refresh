@@ -271,6 +271,123 @@
             margin-left: 0 !important;
         }
     }
+
+    /* 长期组队：白蓝主题 + 卡片列表 */
+    body.admin-theme.longterm-dashboard-light {
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --primary-soft: #eaf2ff;
+        --bg-main: #eef5ff;
+        --bg-surface: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #4b6280;
+        --text-dim: #7f93ad;
+        --border-base: #d8e6fb;
+        --grid-color: rgba(59, 130, 246, 0.08);
+        --menu-active-start: #eaf2ff;
+        --menu-active-end: #dbeafe;
+        --button-gradient-start: #3b82f6;
+        --button-gradient-end: #2563eb;
+        --button-gradient-start-hover: #60a5fa;
+        --button-gradient-end-hover: #3b82f6;
+        --menu-active-text: #1e3a8a;
+        --menu-active-shadow: rgba(37, 99, 235, 0.2);
+        --menu-hover-bg: rgba(59, 130, 246, 0.08);
+        --status-banned-text: #5b6f89;
+        --toast-bg: #ffffff;
+        --toast-border: #d5e4fb;
+        --surface-elev-1: color-mix(in srgb, var(--bg-surface) 94%, #edf4ff 6%);
+        --table-row-hover: color-mix(in srgb, var(--primary-soft) 62%, var(--bg-surface) 38%);
+        background: radial-gradient(120% 120% at 0% 0%, #f7fbff 0%, #eef5ff 54%, #e3efff 100%);
+    }
+
+    body.admin-theme.longterm-dashboard-light .data-table th {
+        background: #f5f9ff;
+    }
+
+    .card-select-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        height: 36px;
+        padding: 0 0.75rem;
+        border: 1px solid var(--border-base);
+        border-radius: var(--radius-md);
+        color: var(--text-muted);
+        background: var(--bg-surface);
+        cursor: pointer;
+    }
+
+    .longterm-team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 0.95rem;
+    }
+
+    .longterm-team-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-base);
+        border-radius: 14px;
+        padding: 0.95rem;
+        box-shadow: 0 8px 22px rgba(30, 64, 175, 0.08);
+    }
+
+    .longterm-team-card-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .longterm-team-card-title {
+        font-size: 0.98rem;
+        font-weight: 700;
+        color: var(--text-main);
+        word-break: break-all;
+    }
+
+    .longterm-team-card-id {
+        color: var(--text-dim);
+        font-size: 0.78rem;
+        margin-top: 0.2rem;
+    }
+
+    .longterm-team-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem 0.7rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .longterm-team-meta-item {
+        background: var(--primary-soft);
+        border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border-base) 86%);
+        border-radius: 10px;
+        padding: 0.5rem 0.6rem;
+    }
+
+    .longterm-team-meta-label {
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        margin-bottom: 0.12rem;
+    }
+
+    .longterm-team-meta-value {
+        font-size: 0.86rem;
+        color: var(--text-main);
+        word-break: break-all;
+    }
+
+    @media (max-width: 640px) {
+        .longterm-team-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .longterm-team-meta {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -430,17 +547,21 @@
             </button>
             {% endif %}
 
-            <!-- 列设置 -->
-            <!-- 列设置 -->
-<div class="dropdown-wrapper">
-    <button id="columnToggleBtn" type="button" class="btn btn-secondary dropdown-toggle">
-        <i data-lucide="columns" style="width: 16px; height: 16px;"></i> 列设置
-    </button>
-    <!-- 加上 dropdown-menu-floating -->
-    <div id="columnToggleDropdown" class="dropdown-menu dropdown-menu-floating">
-        <!-- Column checkboxes will be generated here -->
-    </div>
-</div>
+            {% if active_page == "welfare" %}
+            <div class="dropdown-wrapper">
+                <button id="columnToggleBtn" type="button" class="btn btn-secondary dropdown-toggle">
+                    <i data-lucide="columns" style="width: 16px; height: 16px;"></i> 列设置
+                </button>
+                <div id="columnToggleDropdown" class="dropdown-menu dropdown-menu-floating">
+                    <!-- Column checkboxes will be generated here -->
+                </div>
+            </div>
+            {% else %}
+            <label class="card-select-all">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)">
+                <span>全选</span>
+            </label>
+            {% endif %}
 
             <button onclick="showModal('importTeamModal')" class="btn btn-primary">
                 <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> 导入 Team
@@ -450,13 +571,14 @@
 </div>
 
 {% if teams %}
+{% if active_page == "welfare" %}
 <div class="table-container team-list-table-container">
     <table class="data-table">
         <thead>
             <tr>
                 <th style="width: 40px;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)">
                 </th>
-                <th>{% if active_page == "welfare" %}编号{% else %}ID{% endif %}</th>
+                <th>编号</th>
                 <th>邮箱</th>
                 <th>Account ID</th>
                 <th>Team 名称</th>
@@ -473,9 +595,8 @@
         <tbody>
             {% for team in teams %}
             <tr>
-                <td><input type="checkbox" class="team-checkbox" value="{{ team.id }}" onchange="updateSelectedCount()">
-                </td>
-                <td><span class="text-muted">{% if active_page == "welfare" %}{{ ((pagination.current_page - 1) * pagination.per_page) + loop.index }}{% else %}{{ team.id }}{% endif %}</span></td>
+                <td><input type="checkbox" class="team-checkbox" value="{{ team.id }}" onchange="updateSelectedCount()"></td>
+                <td><span class="text-muted">{{ ((pagination.current_page - 1) * pagination.per_page) + loop.index }}</span></td>
                 <td>
                     {{ team.email }}
                     {% if team.account_role and team.account_role != 'account-owner' %}
@@ -484,22 +605,10 @@
                 </td>
                 <td><span class="text-muted small">{{ team.account_id or '-' }}</span></td>
                 <td>{{ team.team_name or '-' }}</td>
-                <td>
-                    <span class="member-count">
-                        {{ team.current_members }}/{{ team.max_members }}
-                    </span>
-                </td>
+                <td><span class="member-count">{{ team.current_members }}/{{ team.max_members }}</span></td>
                 <td>{{ team.subscription_plan or '-' }}</td>
-                <td>
-                    {% if team.expires_at %}
-                    {{ team.expires_at|format_datetime }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                <td>
-                    <span class="text-muted js-relative-time" data-time="{{ team.created_at or '' }}" data-mode="elapsed">-</span>
-                </td>
+                <td>{% if team.expires_at %}{{ team.expires_at|format_datetime }}{% else %}-{% endif %}</td>
+                <td><span class="text-muted js-relative-time" data-time="{{ team.created_at or '' }}" data-mode="elapsed">-</span></td>
                 <td>
                     {% if team.expires_at %}
                     <span class="text-muted js-relative-time" data-time="{{ team.expires_at }}" data-mode="remaining">-</span>
@@ -516,53 +625,28 @@
                 </td>
                 <td>
                     <span class="status-badge status-{{ team.status }}">
-                        {% if team.status == 'active' %}
-                        可用
-                        {% elif team.status == 'full' %}
-                        已满
-                        {% elif team.status == 'expired' %}
-                        已过期
-                        {% elif team.status == 'banned' %}
-                        已封禁
-                        {% elif team.status == 'error' %}
-                        异常
-                        {% else %}
-                        未知
-                        {% endif %}
+                        {% if team.status == 'active' %}可用{% elif team.status == 'full' %}已满{% elif team.status == 'expired' %}已过期{% elif team.status == 'banned' %}已封禁{% elif team.status == 'error' %}异常{% else %}未知{% endif %}
                     </span>
                 </td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn btn-sm btn-icon btn-minimal btn-info btn-view-members"
-                            data-id="{{ team.id }}" data-email="{{ team.email }}" title="查看成员" aria-label="查看成员">
-                            <i data-lucide="users" style="width: 16px; height: 16px;"></i>
-                            <span class="btn-icon-fallback" aria-hidden="true">员</span>
+                        <button class="btn btn-sm btn-icon btn-minimal btn-info btn-view-members" data-id="{{ team.id }}" data-email="{{ team.email }}" title="查看成员" aria-label="查看成员">
+                            <i data-lucide="users" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">员</span>
                         </button>
-                        <button class="btn btn-sm btn-icon btn-minimal btn-primary btn-edit-team"
-                            data-id="{{ team.id }}" title="编辑" aria-label="编辑">
-                            <i data-lucide="edit-3" style="width: 16px; height: 16px;"></i>
-                            <span class="btn-icon-fallback" aria-hidden="true">编</span>
+                        <button class="btn btn-sm btn-icon btn-minimal btn-primary btn-edit-team" data-id="{{ team.id }}" title="编辑" aria-label="编辑">
+                            <i data-lucide="edit-3" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">编</span>
                         </button>
-                        <button class="btn btn-sm btn-icon btn-minimal btn-secondary btn-refresh-team"
-                            data-id="{{ team.id }}" title="刷新" aria-label="刷新">
-                            <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
-                            <span class="btn-icon-fallback" aria-hidden="true">刷</span>
+                        <button class="btn btn-sm btn-icon btn-minimal btn-secondary btn-refresh-team" data-id="{{ team.id }}" title="刷新" aria-label="刷新">
+                            <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">刷</span>
                         </button>
-                        <button class="btn btn-sm btn-icon btn-minimal btn-success btn-enable-device-auth"
-                            data-id="{{ team.id }}" title="一键开启设备代码验证" aria-label="开启设备验证">
-                            <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
-                            <span class="btn-icon-fallback" aria-hidden="true">验</span>
+                        <button class="btn btn-sm btn-icon btn-minimal btn-success btn-enable-device-auth" data-id="{{ team.id }}" title="一键开启设备代码验证" aria-label="开启设备验证">
+                            <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">验</span>
                         </button>
-                        <button class="btn btn-sm btn-icon btn-minimal btn-primary btn-push-cliproxyapi"
-                            data-id="{{ team.id }}" data-email="{{ team.email }}" title="推送到 CliproxyAPI" aria-label="推送到 CliproxyAPI">
-                            <i data-lucide="send" style="width: 16px; height: 16px;"></i>
-                            <span class="btn-icon-fallback" aria-hidden="true">推</span>
+                        <button class="btn btn-sm btn-icon btn-minimal btn-primary btn-push-cliproxyapi" data-id="{{ team.id }}" data-email="{{ team.email }}" title="推送到 CliproxyAPI" aria-label="推送到 CliproxyAPI">
+                            <i data-lucide="send" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">推</span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-icon btn-minimal btn-danger btn-delete-team"
-                            data-id="{{ team.id }}" data-email="{{ team.email }}" title="删除" aria-label="删除"
-                            onclick='deleteTeam({{ team.id }}, {{ team.email|tojson }})'>
-                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
-                            <span class="btn-icon-fallback" aria-hidden="true">删</span>
+                        <button type="button" class="btn btn-sm btn-icon btn-minimal btn-danger btn-delete-team" data-id="{{ team.id }}" data-email="{{ team.email }}" title="删除" aria-label="删除" onclick='deleteTeam({{ team.id }}, {{ team.email|tojson }})'>
+                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">删</span>
                         </button>
                     </div>
                 </td>
@@ -571,6 +655,94 @@
         </tbody>
     </table>
 </div>
+{% else %}
+<div class="longterm-team-grid">
+    {% for team in teams %}
+    <article class="longterm-team-card">
+        <div class="longterm-team-card-head">
+            <div>
+                <div class="longterm-team-card-title">{{ team.email }}</div>
+                <div class="longterm-team-card-id">ID {{ team.id }}</div>
+            </div>
+            <input type="checkbox" class="team-checkbox" value="{{ team.id }}" onchange="updateSelectedCount()" aria-label="选择 Team {{ team.id }}">
+        </div>
+
+        <div class="longterm-team-meta">
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">Account ID</div>
+                <div class="longterm-team-meta-value">{{ team.account_id or '-' }}</div>
+            </div>
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">Team 名称</div>
+                <div class="longterm-team-meta-value">{{ team.team_name or '-' }}</div>
+            </div>
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">成员数</div>
+                <div class="longterm-team-meta-value">{{ team.current_members }}/{{ team.max_members }}</div>
+            </div>
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">订阅计划</div>
+                <div class="longterm-team-meta-value">{{ team.subscription_plan or '-' }}</div>
+            </div>
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">到期时间</div>
+                <div class="longterm-team-meta-value">{% if team.expires_at %}{{ team.expires_at|format_datetime }}{% else %}-{% endif %}</div>
+            </div>
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">已添加时长</div>
+                <div class="longterm-team-meta-value"><span class="js-relative-time" data-time="{{ team.created_at or '' }}" data-mode="elapsed">-</span></div>
+            </div>
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">剩余时长</div>
+                <div class="longterm-team-meta-value">
+                    {% if team.expires_at %}
+                    <span class="js-relative-time" data-time="{{ team.expires_at }}" data-mode="remaining">-</span>
+                    {% else %}
+                    长期
+                    {% endif %}
+                </div>
+            </div>
+            <div class="longterm-team-meta-item">
+                <div class="longterm-team-meta-label">设备验证</div>
+                <div class="longterm-team-meta-value">
+                    {% if team.device_code_auth_enabled %}
+                    <span class="status-badge status-active">已开启</span>
+                    {% else %}
+                    <span class="status-badge status-banned">未开启</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="longterm-team-card-head" style="margin-bottom: 0;">
+            <span class="status-badge status-{{ team.status }}">
+                {% if team.status == 'active' %}可用{% elif team.status == 'full' %}已满{% elif team.status == 'expired' %}已过期{% elif team.status == 'banned' %}已封禁{% elif team.status == 'error' %}异常{% else %}未知{% endif %}
+            </span>
+            <div class="action-buttons">
+                <button class="btn btn-sm btn-icon btn-minimal btn-info btn-view-members" data-id="{{ team.id }}" data-email="{{ team.email }}" title="查看成员" aria-label="查看成员">
+                    <i data-lucide="users" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">员</span>
+                </button>
+                <button class="btn btn-sm btn-icon btn-minimal btn-primary btn-edit-team" data-id="{{ team.id }}" title="编辑" aria-label="编辑">
+                    <i data-lucide="edit-3" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">编</span>
+                </button>
+                <button class="btn btn-sm btn-icon btn-minimal btn-secondary btn-refresh-team" data-id="{{ team.id }}" title="刷新" aria-label="刷新">
+                    <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">刷</span>
+                </button>
+                <button class="btn btn-sm btn-icon btn-minimal btn-success btn-enable-device-auth" data-id="{{ team.id }}" title="一键开启设备代码验证" aria-label="开启设备验证">
+                    <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">验</span>
+                </button>
+                <button class="btn btn-sm btn-icon btn-minimal btn-primary btn-push-cliproxyapi" data-id="{{ team.id }}" data-email="{{ team.email }}" title="推送到 CliproxyAPI" aria-label="推送到 CliproxyAPI">
+                    <i data-lucide="send" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">推</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-icon btn-minimal btn-danger btn-delete-team" data-id="{{ team.id }}" data-email="{{ team.email }}" title="删除" aria-label="删除" onclick='deleteTeam({{ team.id }}, {{ team.email|tojson }})'>
+                    <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i><span class="btn-icon-fallback" aria-hidden="true">删</span>
+                </button>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% endif %}
 
 <!-- 分页 -->
 <!-- 分页 -->
@@ -834,6 +1006,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        if (document.body && document.body.classList.contains('admin-theme') && document.body.getAttribute('data-pool-type') === 'normal') {
+            document.body.classList.add('longterm-dashboard-light');
+        }
+
         const editTeamModal = document.getElementById('editTeamModal');
         if (editTeamModal && editTeamModal.parentElement !== document.body) {
             document.body.appendChild(editTeamModal);
@@ -844,8 +1020,10 @@
             mountFloatingDropdownsToBody();
         }
 
-        // Init Column Toggler（升级 key，避免旧列索引缓存导致新列被错位隐藏）
-        initColumnToggler('.data-table', 'team_list_columns_v2');
+        // 仅体验组队使用表格列设置
+        if (document.querySelector('.data-table')) {
+            initColumnToggler('.data-table', 'team_list_columns_v2');
+        }
 
         // 渲染时长列并每分钟刷新
         renderRelativeTimes();
