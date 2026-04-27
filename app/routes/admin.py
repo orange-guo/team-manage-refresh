@@ -14,6 +14,8 @@ from pydantic import BaseModel, Field
 
 from app.database import AsyncSessionLocal, get_db
 from app.dependencies.auth import require_admin
+from app.services.codex_quota import codex_quota_service
+from app.services.encryption import encryption_service
 from app.services.team import TeamService
 from app.services.redemption import RedemptionService
 from app.services.chatgpt import chatgpt_service
@@ -452,6 +454,86 @@ async def get_team_info(
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"success": False, "error": "操作失败，请稍后重试"}
+        )
+
+
+@router.get("/teams/{team_id}/quota")
+async def get_team_quota(
+    team_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: dict = Depends(require_admin)
+):
+    """获取单个 Team 的 Codex 额度信息。"""
+    try:
+        stmt = select(Team).where(Team.id == team_id)
+        result = await db.execute(stmt)
+        team = result.scalar_one_or_none()
+
+        if not team:
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"success": False, "error": f"Team ID {team_id} 不存在"},
+            )
+
+        cliproxy_quota_result = await cliproxyapi_service.fetch_team_quota(team, db)
+        if cliproxy_quota_result.get("success"):
+            return JSONResponse(content=cliproxy_quota_result)
+        if cliproxy_quota_result.get("configured"):
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content=cliproxy_quota_result,
+            )
+
+        access_token = await team_service.ensure_access_token(team, db)
+        if not access_token:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"success": False, "error": "当前 Team 的 Access Token 无效且刷新失败"},
+            )
+
+        account_id = str(team.account_id or "").strip()
+        if not account_id:
+            account_id = codex_quota_service.extract_account_id_from_token(access_token) or ""
+
+        id_token = None
+        if team.id_token_encrypted:
+            try:
+                id_token = encryption_service.decrypt_token(team.id_token_encrypted)
+            except Exception as exc:
+                logger.warning("解密 Team %s 的 id_token 失败: %s", team_id, exc)
+
+        if not account_id and id_token:
+            account_id = codex_quota_service.extract_account_id_from_token(id_token) or ""
+
+        if not account_id:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"success": False, "error": "当前 Team 缺少 ChatGPT Account ID，无法查询额度"},
+            )
+
+        if account_id != (team.account_id or ""):
+            team.account_id = account_id
+            await db.commit()
+
+        fallback_plan_type = str(team.plan_type or "").strip().lower()
+        if not fallback_plan_type and id_token:
+            fallback_plan_type = codex_quota_service.extract_plan_type_from_token(id_token) or ""
+
+        quota_result = await codex_quota_service.fetch_quota(
+            access_token=access_token,
+            account_id=account_id,
+            db_session=db,
+            fallback_email=team.email,
+            fallback_plan_type=fallback_plan_type,
+        )
+
+        status_code = status.HTTP_200_OK if quota_result.get("success") else status.HTTP_400_BAD_REQUEST
+        return JSONResponse(status_code=status_code, content=quota_result)
+    except Exception:
+        logger.exception("获取 Team %s 额度信息失败", team_id)
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"success": False, "error": "获取额度信息失败，请稍后重试"},
         )
 
 
@@ -982,27 +1064,6 @@ async def push_team_to_cliproxyapi(
         return JSONResponse(content=result)
     except Exception as e:
         logger.error("推送 Team %s 到 CliproxyAPI 失败: %s", team_id, e)
-        return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"success": False, "error": str(e)}
-        )
-
-
-@router.post("/teams/{team_id}/refresh-cliproxyapi-quota")
-async def refresh_team_cliproxyapi_quota(
-    team_id: int,
-    db: AsyncSession = Depends(get_db),
-    current_user: dict = Depends(require_admin)
-):
-    """刷新单个 Team 的配额信息（通过 CliproxyAPI management api-call）。"""
-    try:
-        logger.info("管理员刷新 Team %s 的 CliproxyAPI 配额", team_id)
-        result = await cliproxyapi_service.refresh_team_quota(team_id, db)
-        if not result.get("success"):
-            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=result)
-        return JSONResponse(content=result)
-    except Exception as e:
-        logger.error("刷新 Team %s 配额失败: %s", team_id, e)
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"success": False, "error": str(e)}

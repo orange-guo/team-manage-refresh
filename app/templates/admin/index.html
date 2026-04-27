@@ -272,77 +272,40 @@
         }
     }
 
-    /* 长期组队：按参考图做的浅色磨砂卡片风 */
+    /* 长期组队：未来华贵控制台 */
     body.admin-theme.longterm-dashboard-light {
-        --primary: #4f46e5;
-        --primary-hover: #4338ca;
-        --primary-soft: #eef2ff;
-        --bg-main: #f5f7ff;
-        --bg-surface: rgba(255, 255, 255, 0.9);
-        --text-main: #111827;
-        --text-muted: #5b667a;
-        --text-dim: #8a93a6;
-        --border-base: #d9e2f4;
-        --grid-color: rgba(79, 70, 229, 0.08);
-        --menu-active-start: #eef2ff;
-        --menu-active-end: #e5e7ff;
-        --button-gradient-start: #6366f1;
-        --button-gradient-end: #4f46e5;
-        --button-gradient-start-hover: #818cf8;
-        --button-gradient-end-hover: #6366f1;
-        --menu-active-text: #3730a3;
-        --menu-active-shadow: rgba(79, 70, 229, 0.2);
-        --menu-hover-bg: rgba(99, 102, 241, 0.09);
-        --status-banned-text: #6b7280;
-        --toast-bg: rgba(255, 255, 255, 0.96);
-        --toast-border: #dde3f3;
-        --surface-elev-1: rgba(255, 255, 255, 0.92);
-        --table-row-hover: rgba(238, 242, 255, 0.9);
+        --primary: #18c7ad;
+        --primary-hover: #2dd4bf;
+        --primary-soft: rgba(24, 199, 173, 0.14);
+        --bg-main: #0a0d12;
+        --bg-surface: rgba(16, 22, 31, 0.86);
+        --text-main: #f6f1df;
+        --text-muted: #aeb7c2;
+        --text-dim: #707987;
+        --border-base: rgba(222, 185, 94, 0.18);
+        --grid-color: rgba(214, 179, 92, 0.045);
+        --menu-active-start: rgba(24, 199, 173, 0.22);
+        --menu-active-end: rgba(214, 179, 92, 0.18);
+        --button-gradient-start: #18c7ad;
+        --button-gradient-end: #d6b35c;
+        --button-gradient-start-hover: #2dd4bf;
+        --button-gradient-end-hover: #f0c96d;
+        --menu-active-text: #fff7df;
+        --menu-active-shadow: rgba(214, 179, 92, 0.24);
+        --menu-hover-bg: rgba(255, 255, 255, 0.055);
+        --status-banned-text: #b7b2a7;
+        --toast-bg: rgba(15, 20, 28, 0.94);
+        --toast-border: rgba(214, 179, 92, 0.24);
+        --surface-elev-1: rgba(16, 22, 31, 0.74);
+        --table-row-hover: rgba(24, 199, 173, 0.08);
         background:
-            radial-gradient(1200px 560px at 8% -6%, rgba(139, 92, 246, 0.24), transparent 62%),
-            radial-gradient(980px 520px at 92% 8%, rgba(56, 189, 248, 0.2), transparent 60%),
-            linear-gradient(180deg, #f8faff 0%, #f1f5ff 52%, #eef3ff 100%);
-    }
-
-    body.admin-theme.longterm-dashboard-light .dashboard-card,
-    body.admin-theme.longterm-dashboard-light .stats-card,
-    body.admin-theme.longterm-dashboard-light .toolbar,
-    body.admin-theme.longterm-dashboard-light .modal-content,
-    body.admin-theme.longterm-dashboard-light .table-container,
-    body.admin-theme.longterm-dashboard-light .batch-actions-group {
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(208, 219, 243, 0.9);
-        box-shadow: 0 12px 34px rgba(79, 70, 229, 0.1);
+            linear-gradient(118deg, rgba(214, 179, 92, 0.12) 0%, transparent 26%),
+            linear-gradient(242deg, rgba(24, 199, 173, 0.12) 0%, transparent 28%),
+            linear-gradient(180deg, #07090d 0%, #0d1118 46%, #080a0f 100%);
     }
 
     body.admin-theme.longterm-dashboard-light .data-table th {
-        background: rgba(245, 247, 255, 0.95);
-    }
-
-    body.admin-theme.longterm-dashboard-light .btn-primary {
-        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.28);
-    }
-
-    body.admin-theme.longterm-dashboard-light .status-badge.status-active {
-        background: #e8f7ef;
-        border-color: #c3e9d2;
-        color: #166534;
-    }
-
-    body.admin-theme.longterm-dashboard-light .status-badge.status-full {
-        background: #fff4d9;
-        border-color: #f5dfaa;
-        color: #92400e;
-    }
-
-    body.admin-theme.longterm-dashboard-light .status-badge.status-expired,
-    body.admin-theme.longterm-dashboard-light .status-badge.status-banned,
-    body.admin-theme.longterm-dashboard-light .status-badge.status-error {
-        background: #fdeaea;
-        border-color: #f6c9c9;
-        color: #991b1b;
+        background: rgba(12, 16, 24, 0.96);
     }
 
     .card-select-all {
@@ -360,24 +323,37 @@
 
     .longterm-team-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        gap: 0.95rem;
+        grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
+        gap: 1.1rem;
     }
 
     .longterm-team-card {
-        background: rgba(255, 255, 255, 0.8);
-        border: 1px solid rgba(215, 225, 244, 0.95);
-        border-radius: 16px;
-        padding: 0.95rem;
-        box-shadow: 0 14px 30px rgba(79, 70, 229, 0.12);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        background:
+            linear-gradient(180deg, rgba(20, 27, 38, 0.92) 0%, rgba(11, 15, 23, 0.88) 100%);
+        border: 1px solid rgba(214, 179, 92, 0.18);
+        border-radius: 10px;
+        padding: 1rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.045);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(18px);
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .longterm-team-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #18c7ad 0%, #d6b35c 100%);
+        opacity: 0.9;
     }
 
     .longterm-team-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 18px 36px rgba(79, 70, 229, 0.16);
+        border-color: rgba(214, 179, 92, 0.34);
+        box-shadow: 0 28px 68px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(24, 199, 173, 0.08);
     }
 
     .longterm-team-card-head {
@@ -389,9 +365,9 @@
     }
 
     .longterm-team-card-title {
-        font-size: 0.98rem;
+        font-size: 1rem;
         font-weight: 700;
-        color: var(--text-main);
+        color: #fff7df;
         word-break: break-all;
     }
 
@@ -404,15 +380,20 @@
     .longterm-team-meta {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.55rem 0.7rem;
-        margin-bottom: 0.8rem;
+        gap: 0.62rem 0.72rem;
+        margin-bottom: 0.9rem;
     }
 
     .longterm-team-meta-item {
-        background: var(--primary-soft);
-        border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border-base) 86%);
-        border-radius: 10px;
-        padding: 0.5rem 0.6rem;
+        background: rgba(255, 255, 255, 0.045);
+        border: 1px solid rgba(214, 179, 92, 0.14);
+        border-radius: 8px;
+        padding: 0.58rem 0.66rem;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+    }
+
+    .longterm-team-meta-item.is-wide {
+        grid-column: 1 / -1;
     }
 
     .longterm-team-meta-label {
@@ -423,38 +404,449 @@
 
     .longterm-team-meta-value {
         font-size: 0.86rem;
-        color: var(--text-main);
+        color: #f6f1df;
         word-break: break-all;
     }
 
-    .quota-chip {
+    .member-progress-panel {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .member-progress-head,
+    .member-progress-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem;
+    }
+
+    .member-progress-head {
+        font-size: 0.86rem;
+        color: var(--text-main);
+    }
+
+    .member-progress-head strong {
+        font-size: 0.95rem;
+        color: #fff7df;
+    }
+
+    .member-progress-track {
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .member-progress-bar {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #18c7ad 0%, #2dd4bf 55%, #d6b35c 100%);
+        transition: width 0.22s ease;
+    }
+
+    .member-progress-foot {
+        font-size: 0.74rem;
+        color: var(--text-dim);
+    }
+
+    .member-progress-foot strong {
+        color: #fff7df;
+    }
+
+    .longterm-team-quota {
+        margin-bottom: 0.9rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        border: 1px solid rgba(214, 179, 92, 0.18);
+        background:
+            linear-gradient(135deg, rgba(24, 199, 173, 0.08) 0%, rgba(214, 179, 92, 0.07) 100%),
+            rgba(255, 255, 255, 0.045);
+    }
+
+    .longterm-team-quota-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .longterm-team-quota-title {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #fff7df;
+        letter-spacing: 0.01em;
+    }
+
+    .longterm-team-quota-subtitle {
+        margin-top: 0.18rem;
+        font-size: 0.76rem;
+        color: var(--text-dim);
+    }
+
+    .longterm-team-quota-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        flex-shrink: 0;
+    }
+
+    .longterm-team-quota-badges {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+    }
+
+    .quota-pill {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
+        min-height: 26px;
+        padding: 0.15rem 0.6rem;
         border-radius: 999px;
-        padding: 0.12rem 0.5rem;
-        font-size: 0.74rem;
-        font-weight: 600;
-        border: 1px solid var(--border-base);
-        background: #f8fbff;
-        color: #1f3f78;
+        font-size: 0.72rem;
+        font-weight: 700;
+        border: 1px solid transparent;
+        white-space: nowrap;
     }
 
-    .quota-chip-ok {
-        background: #e8f7ee;
-        border-color: #b9e2c8;
-        color: #166534;
+    .quota-pill-neutral {
+        color: #c8d0da;
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.1);
     }
 
-    .quota-chip-error {
-        background: #fdecec;
-        border-color: #f6c8c8;
-        color: #991b1b;
+    .quota-pill-info {
+        color: #18c7ad;
+        background: rgba(20, 184, 166, 0.12);
+        border-color: rgba(20, 184, 166, 0.2);
     }
 
-    .quota-actions {
+    .quota-pill-success {
+        color: #047857;
+        background: rgba(16, 185, 129, 0.14);
+        border-color: rgba(16, 185, 129, 0.22);
+    }
+
+    .quota-pill-warning {
+        color: #b45309;
+        background: rgba(245, 158, 11, 0.16);
+        border-color: rgba(245, 158, 11, 0.24);
+    }
+
+    .quota-pill-danger {
+        color: #b91c1c;
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-refresh-quota {
+        min-width: 92px;
+    }
+
+    .btn-refresh-quota.is-loading svg {
+        animation: quota-spin 0.95s linear infinite;
+    }
+
+    @keyframes quota-spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .longterm-team-quota-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+        gap: 0.72rem;
+    }
+
+    .quota-window-card {
+        --quota-accent: #18c7ad;
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px solid color-mix(in srgb, var(--quota-accent) 20%, var(--border-base) 80%);
+        border-radius: 8px;
+        padding: 0.78rem;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .quota-window-card.is-warning {
+        --quota-accent: #f59e0b;
+    }
+
+    .quota-window-card.is-danger {
+        --quota-accent: #ef4444;
+    }
+
+    .quota-window-header {
         display: flex;
-        gap: 0.45rem;
-        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.55rem;
+    }
+
+    .quota-window-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #fff7df;
+    }
+
+    .quota-window-value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--quota-accent);
+    }
+
+    .quota-progress {
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        margin-bottom: 0.58rem;
+    }
+
+    .quota-progress-bar {
+        height: 100%;
+        width: 0%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, color-mix(in srgb, var(--quota-accent) 72%, #ffffff 28%) 0%, var(--quota-accent) 100%);
+        transition: width 0.25s ease;
+    }
+
+    .quota-window-meta {
+        display: grid;
+        gap: 0.24rem;
+        font-size: 0.74rem;
+        color: var(--text-dim);
+    }
+
+    .quota-inline-status {
+        border-radius: 8px;
+        padding: 0.72rem 0.8rem;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        border: 1px dashed rgba(148, 163, 184, 0.28);
+        background: rgba(255, 255, 255, 0.045);
+        color: var(--text-dim);
+    }
+
+    .quota-inline-status.info {
+        color: #38bdf8;
+        border-color: rgba(56, 189, 248, 0.22);
+        background: rgba(56, 189, 248, 0.08);
+    }
+
+    .quota-inline-status.success {
+        color: #34d399;
+        border-color: rgba(52, 211, 153, 0.22);
+        background: rgba(52, 211, 153, 0.08);
+    }
+
+    .quota-inline-status.warning {
+        color: #d6b35c;
+        border-color: rgba(214, 179, 92, 0.24);
+        background: rgba(214, 179, 92, 0.08);
+    }
+
+    .quota-inline-status.error {
+        color: #fb7185;
+        border-color: rgba(251, 113, 133, 0.24);
+        background: rgba(251, 113, 133, 0.08);
+    }
+
+    .quota-note {
+        margin-top: 0.65rem;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+    }
+
+    .quota-note strong {
+        color: var(--text-main);
+    }
+
+    .longterm-team-card-footer {
+        margin-bottom: 0;
+        padding-top: 0.78rem;
+        border-top: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light,
+    html.theme-warm body.admin-theme.longterm-dashboard-light {
+        --primary: #0f766e;
+        --primary-hover: #0d9488;
+        --primary-soft: #e6f7f5;
+        --bg-main: #f6f8fb;
+        --bg-surface: rgba(255, 255, 255, 0.96);
+        --text-main: #111827;
+        --text-muted: #526071;
+        --text-dim: #7b8796;
+        --border-base: #d9e2ec;
+        --grid-color: rgba(15, 118, 110, 0.055);
+        --menu-active-start: #e6f7f5;
+        --menu-active-end: #fff7e6;
+        --button-gradient-start: #0f766e;
+        --button-gradient-end: #d6a94f;
+        --button-gradient-start-hover: #0d9488;
+        --button-gradient-end-hover: #c9942d;
+        --menu-active-text: #0f3f3b;
+        --menu-active-shadow: rgba(15, 118, 110, 0.16);
+        --menu-hover-bg: #f3f8fb;
+        --status-banned-text: #667085;
+        --toast-bg: rgba(255, 255, 255, 0.96);
+        --toast-border: #d9e2ec;
+        --surface-elev-1: rgba(255, 255, 255, 0.94);
+        --table-row-hover: rgba(15, 118, 110, 0.06);
+        background:
+            radial-gradient(circle at 10% 0%, rgba(15, 118, 110, 0.09) 0%, transparent 28%),
+            radial-gradient(circle at 88% 12%, rgba(214, 169, 79, 0.1) 0%, transparent 30%),
+            linear-gradient(180deg, #ffffff 0%, #f6f8fb 48%, #eef3f7 100%);
+        color: var(--text-main);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .data-table th,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .data-table th {
+        background: #f8fafc;
+        color: var(--text-muted);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .card-select-all,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .card-select-all {
+        background: rgba(255, 255, 255, 0.94);
+        border-color: var(--border-base);
+        color: var(--text-muted);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-card,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-card {
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 251, 253, 0.94) 100%);
+        border-color: rgba(15, 118, 110, 0.15);
+        box-shadow: 0 20px 46px rgba(15, 23, 42, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.88);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-card:hover,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-card:hover {
+        border-color: rgba(15, 118, 110, 0.26);
+        box-shadow: 0 26px 62px rgba(15, 23, 42, 0.13), 0 0 0 1px rgba(214, 169, 79, 0.1);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-card::before,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-card::before {
+        background: linear-gradient(90deg, #0f766e 0%, #d6a94f 100%);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-card-title,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-card-title,
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-meta-value,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-meta-value,
+    body.admin-theme.theme-warm.longterm-dashboard-light .member-progress-head strong,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .member-progress-head strong,
+    body.admin-theme.theme-warm.longterm-dashboard-light .member-progress-foot strong,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .member-progress-foot strong,
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-quota-title,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-quota-title,
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-window-label,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-window-label {
+        color: var(--text-main);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-card-id,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-card-id,
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-meta-label,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-meta-label,
+    body.admin-theme.theme-warm.longterm-dashboard-light .member-progress-foot,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .member-progress-foot,
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-quota-subtitle,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-quota-subtitle,
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-window-meta,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-window-meta,
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-note,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-note {
+        color: var(--text-muted);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-meta-item,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-meta-item,
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-window-card,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-window-card {
+        background: rgba(255, 255, 255, 0.82);
+        border-color: rgba(15, 118, 110, 0.13);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-quota,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-quota {
+        background:
+            linear-gradient(135deg, rgba(15, 118, 110, 0.07) 0%, rgba(214, 169, 79, 0.08) 100%),
+            rgba(255, 255, 255, 0.86);
+        border-color: rgba(15, 118, 110, 0.14);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .member-progress-track,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .member-progress-track,
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-progress,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-progress {
+        background: #e6edf3;
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .member-progress-bar,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .member-progress-bar {
+        background: linear-gradient(90deg, #0f766e 0%, #0d9488 58%, #d6a94f 100%);
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-pill-neutral,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-pill-neutral {
+        color: #526071;
+        background: #f3f6f9;
+        border-color: #d9e2ec;
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-inline-status,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-inline-status {
+        background: rgba(255, 255, 255, 0.82);
+        border-color: #cbd5e1;
+        color: #526071;
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-inline-status.info,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-inline-status.info {
+        color: #0369a1;
+        border-color: rgba(2, 132, 199, 0.24);
+        background: #eff8ff;
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-inline-status.success,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-inline-status.success {
+        color: #047857;
+        border-color: rgba(16, 185, 129, 0.24);
+        background: #ecfdf5;
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-inline-status.warning,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-inline-status.warning {
+        color: #92400e;
+        border-color: rgba(245, 158, 11, 0.28);
+        background: #fffbeb;
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .quota-inline-status.error,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .quota-inline-status.error {
+        color: #b91c1c;
+        border-color: rgba(239, 68, 68, 0.24);
+        background: #fef2f2;
+    }
+
+    body.admin-theme.theme-warm.longterm-dashboard-light .longterm-team-card-footer,
+    html.theme-warm body.admin-theme.longterm-dashboard-light .longterm-team-card-footer {
+        border-top-color: #e5edf4;
     }
 
     @media (max-width: 640px) {
@@ -465,13 +857,26 @@
         .longterm-team-meta {
             grid-template-columns: 1fr;
         }
+
+        .longterm-team-quota-head {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .longterm-team-quota-actions {
+            justify-content: space-between;
+        }
+
+        .longterm-team-quota-badges {
+            justify-content: flex-start;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h2>{% if active_page == "welfare" %}体验组队{% else %}长期组队（卡片版 20260427）{% endif %}</h2>
+    <h2>{% if active_page == "welfare" %}体验组队{% else %}长期 Team 控制台{% endif %}</h2>
 </div>
 
 <!-- 统计卡片 -->
@@ -663,7 +1068,7 @@
                 <th>成员数</th>
                 <th>订阅计划</th>
                 <th>到期时间</th>
-                <th>已添加时长</th>
+                <th>已添加时间</th>
                 <th>剩余时长</th>
                 <th>设备验证</th>
                 <th>状态</th>
@@ -686,7 +1091,13 @@
                 <td><span class="member-count">{{ team.current_members }}/{{ team.max_members }}</span></td>
                 <td>{{ team.subscription_plan or '-' }}</td>
                 <td>{% if team.expires_at %}{{ team.expires_at|format_datetime }}{% else %}-{% endif %}</td>
-                <td><span class="text-muted js-relative-time" data-time="{{ team.created_at or '' }}" data-mode="elapsed">-</span></td>
+                <td>
+                    {% if team.created_at %}
+                    <span class="text-muted js-relative-time" data-time="{{ team.created_at }}" data-mode="elapsed">-</span>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
                 <td>
                     {% if team.expires_at %}
                     <span class="text-muted js-relative-time" data-time="{{ team.expires_at }}" data-mode="remaining">-</span>
@@ -754,9 +1165,28 @@
                 <div class="longterm-team-meta-label">Team 名称</div>
                 <div class="longterm-team-meta-value">{{ team.team_name or '-' }}</div>
             </div>
-            <div class="longterm-team-meta-item">
-                <div class="longterm-team-meta-label">成员数</div>
-                <div class="longterm-team-meta-value">{{ team.current_members }}/{{ team.max_members }}</div>
+            <div class="longterm-team-meta-item is-wide">
+                {% set member_current = team.current_members or 0 %}
+                {% set member_max = team.max_members or 0 %}
+                {% set member_used_percent = 0 %}
+                {% if member_max > 0 %}
+                    {% set member_raw_percent = member_current * 100 / member_max %}
+                    {% set member_used_percent = 100 if member_raw_percent > 100 else member_raw_percent %}
+                {% endif %}
+                {% set member_remaining = member_max - member_current if member_max > member_current else 0 %}
+                <div class="member-progress-panel">
+                    <div class="member-progress-head">
+                        <span>成员席位</span>
+                        <strong>{{ member_current }}/{{ member_max if member_max else '-' }}</strong>
+                    </div>
+                    <div class="member-progress-track" aria-label="成员席位进度">
+                        <span class="member-progress-bar" style="width: {{ member_used_percent|round(0, 'floor')|int }}%;"></span>
+                    </div>
+                    <div class="member-progress-foot">
+                        <span>已占 {{ member_used_percent|round(0, 'floor')|int }}%</span>
+                        <span>{% if member_remaining > 0 %}剩余 <strong>{{ member_remaining }}</strong> 个席位{% else %}<strong>席位已满</strong>{% endif %}</span>
+                    </div>
+                </div>
             </div>
             <div class="longterm-team-meta-item">
                 <div class="longterm-team-meta-label">订阅计划</div>
@@ -767,8 +1197,14 @@
                 <div class="longterm-team-meta-value">{% if team.expires_at %}{{ team.expires_at|format_datetime }}{% else %}-{% endif %}</div>
             </div>
             <div class="longterm-team-meta-item">
-                <div class="longterm-team-meta-label">已添加时长</div>
-                <div class="longterm-team-meta-value"><span class="js-relative-time" data-time="{{ team.created_at or '' }}" data-mode="elapsed">-</span></div>
+                <div class="longterm-team-meta-label">已添加时间</div>
+                <div class="longterm-team-meta-value">
+                    {% if team.created_at %}
+                    <span class="js-relative-time" data-time="{{ team.created_at }}" data-mode="elapsed">-</span>
+                    {% else %}
+                    -
+                    {% endif %}
+                </div>
             </div>
             <div class="longterm-team-meta-item">
                 <div class="longterm-team-meta-label">剩余时长</div>
@@ -792,7 +1228,28 @@
             </div>
         </div>
 
-        <div class="longterm-team-card-head" style="margin-bottom: 0;">
+        <section class="longterm-team-quota" data-team-id="{{ team.id }}">
+            <div class="longterm-team-quota-head">
+                <div>
+                    <div class="longterm-team-quota-title">Codex 剩余额度</div>
+                    <div class="longterm-team-quota-subtitle">展示当前 5 小时与周窗口的剩余比例</div>
+                </div>
+                <div class="longterm-team-quota-actions">
+                    <div class="longterm-team-quota-badges">
+                        <span class="quota-pill quota-pill-neutral">等待刷新</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-secondary btn-refresh-quota" data-id="{{ team.id }}" data-email="{{ team.email }}" title="刷新额度" aria-label="刷新额度">
+                        <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                        <span>刷新额度</span>
+                    </button>
+                </div>
+            </div>
+            <div class="longterm-team-quota-body" data-quota-body="{{ team.id }}">
+                <div class="quota-inline-status info">点击“刷新额度”查看当前 Codex 额度，也会在页面加载后自动拉取。</div>
+            </div>
+        </section>
+
+        <div class="longterm-team-card-head longterm-team-card-footer">
             <span class="status-badge status-{{ team.status }}">
                 {% if team.status == 'active' %}可用{% elif team.status == 'full' %}已满{% elif team.status == 'expired' %}已过期{% elif team.status == 'banned' %}已封禁{% elif team.status == 'error' %}异常{% else %}未知{% endif %}
             </span>
@@ -1046,6 +1503,17 @@
         return '不到1分钟';
     }
 
+    function formatElapsedAddedDuration(seconds) {
+        const safe = Math.max(0, Math.floor(Number(seconds) || 0));
+        const days = Math.floor(safe / 86400);
+        const hours = Math.floor((safe % 86400) / 3600);
+
+        if (days <= 0 && hours <= 0) {
+            return '不到1小时';
+        }
+        return `${days}天 ${hours}小时`;
+    }
+
     function renderRelativeTimes() {
         const now = new Date();
         document.querySelectorAll('.js-relative-time').forEach((node) => {
@@ -1079,8 +1547,269 @@
                 node.textContent = '-';
                 return;
             }
-            node.textContent = formatRelativeDuration(elapsedSeconds);
+            node.textContent = mode === 'elapsed'
+                ? formatElapsedAddedDuration(elapsedSeconds)
+                : formatRelativeDuration(elapsedSeconds);
         });
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function getQuotaPanel(teamId) {
+        return document.querySelector(`.longterm-team-quota[data-team-id="${String(teamId)}"]`);
+    }
+
+    function getQuotaBody(teamId) {
+        return document.querySelector(`[data-quota-body="${String(teamId)}"]`);
+    }
+
+    function getQuotaRefreshButton(teamId) {
+        return document.querySelector(`.btn-refresh-quota[data-id="${String(teamId)}"]`);
+    }
+
+    function formatQuotaDateTime(value) {
+        if (!value) return '-';
+        try {
+            return formatDateTime(value);
+        } catch (error) {
+            return String(value);
+        }
+    }
+
+    function formatQuotaReason(rawType) {
+        const normalized = String(rawType || '').trim();
+        const mapping = {
+            workspace_owner_credits_depleted: '工作区额度已耗尽',
+            usage_limit_reached: '已达到当前额度上限',
+            insufficient_quota: '当前账户配额不足',
+            no_active_subscription: '当前账户没有可用订阅',
+        };
+        return mapping[normalized] || normalized;
+    }
+
+    function getQuotaVariant(windowItem) {
+        const usedPercent = Math.max(0, Math.min(100, Number(windowItem?.used_percent) || 0));
+        const remainingPercent = Math.max(0, 100 - usedPercent);
+        if (windowItem?.limit_reached || remainingPercent <= 0) {
+            return 'danger';
+        }
+        if (remainingPercent <= 30) {
+            return 'warning';
+        }
+        return 'success';
+    }
+
+    function setQuotaButtonLoading(teamId, isLoading) {
+        const button = getQuotaRefreshButton(teamId);
+        if (!button) return;
+        button.disabled = Boolean(isLoading);
+        button.classList.toggle('is-loading', Boolean(isLoading));
+    }
+
+    function renderQuotaLoading(teamId, message = '正在刷新额度...') {
+        const panel = getQuotaPanel(teamId);
+        const body = getQuotaBody(teamId);
+        if (!panel || !body) return;
+
+        const badges = panel.querySelector('.longterm-team-quota-badges');
+        if (badges) {
+            badges.innerHTML = '<span class="quota-pill quota-pill-info">刷新中</span>';
+        }
+
+        body.innerHTML = `<div class="quota-inline-status info">${escapeHtml(message)}</div>`;
+    }
+
+    function renderQuotaError(teamId, message) {
+        const panel = getQuotaPanel(teamId);
+        const body = getQuotaBody(teamId);
+        if (!panel || !body) return;
+
+        const badges = panel.querySelector('.longterm-team-quota-badges');
+        if (badges) {
+            badges.innerHTML = '<span class="quota-pill quota-pill-danger">刷新失败</span>';
+        }
+
+        body.innerHTML = `
+            <div class="quota-inline-status error">${escapeHtml(message || '额度加载失败，请稍后重试')}</div>
+        `;
+    }
+
+    function renderQuotaSuccess(teamId, quota) {
+        const panel = getQuotaPanel(teamId);
+        const body = getQuotaBody(teamId);
+        if (!panel || !body) return;
+
+        const windows = Array.isArray(quota?.windows) ? quota.windows : [];
+        const badges = panel.querySelector('.longterm-team-quota-badges');
+        const planLabel = quota?.plan_label || quota?.plan_type || '未知计划';
+        const remainingValues = windows.map((windowItem) => {
+            const usedPercent = Math.max(0, Math.min(100, Number(windowItem?.used_percent) || 0));
+            return Math.max(0, 100 - usedPercent);
+        });
+        const minRemainingPercent = remainingValues.length ? Math.min(...remainingValues) : null;
+        const hasEmptyWindow = minRemainingPercent !== null && minRemainingPercent <= 0;
+        const hasLowWindow = minRemainingPercent !== null && minRemainingPercent <= 30;
+        const statusClass = quota?.no_access
+            ? 'quota-pill-warning'
+            : quota?.limit_reached || quota?.rate_limit_allowed === false || hasEmptyWindow
+                ? 'quota-pill-danger'
+                : hasLowWindow
+                    ? 'quota-pill-warning'
+                    : windows.length
+                    ? 'quota-pill-success'
+                    : 'quota-pill-neutral';
+        const statusLabel = quota?.no_access
+            ? '未开通'
+            : quota?.limit_reached || quota?.rate_limit_allowed === false || hasEmptyWindow
+                ? '窗口已满'
+                : hasLowWindow
+                    ? '额度偏低'
+                    : windows.length
+                    ? '可用'
+                    : '暂无数据';
+
+        if (badges) {
+            badges.innerHTML = `
+                <span class="quota-pill quota-pill-info">${escapeHtml(planLabel)}</span>
+                <span class="quota-pill ${statusClass}">${escapeHtml(statusLabel)}</span>
+            `;
+        }
+
+        if (quota?.no_access) {
+            body.innerHTML = `
+                <div class="quota-inline-status warning">当前账号暂未返回可用的 Codex 额度窗口，通常表示尚未开通对应能力。</div>
+                <div class="quota-note">最近刷新：<strong>${escapeHtml(formatQuotaDateTime(quota?.fetched_at))}</strong></div>
+            `;
+            return;
+        }
+
+        if (!windows.length) {
+            body.innerHTML = `
+                <div class="quota-inline-status warning">接口返回成功，但当前没有可展示的额度窗口数据。</div>
+                <div class="quota-note">最近刷新：<strong>${escapeHtml(formatQuotaDateTime(quota?.fetched_at))}</strong></div>
+            `;
+            return;
+        }
+
+        const windowHtml = windows.map((windowItem) => {
+            const usedPercent = Math.max(0, Math.min(100, Number(windowItem?.used_percent) || 0));
+            const remainingPercent = Math.max(0, 100 - usedPercent);
+            const variant = getQuotaVariant(windowItem);
+            const resetAt = formatQuotaDateTime(windowItem?.reset_at);
+            const statusText = windowItem?.limit_reached || remainingPercent <= 0
+                ? '剩余 0%，等待重置'
+                : quota?.rate_limit_allowed === false
+                    ? '当前窗口受限'
+                    : remainingPercent <= 30
+                        ? '剩余额度偏低'
+                        : '剩余额度充足';
+
+            return `
+                <div class="quota-window-card ${variant === 'danger' ? 'is-danger' : variant === 'warning' ? 'is-warning' : ''}">
+                    <div class="quota-window-header">
+                        <div class="quota-window-label">${escapeHtml(windowItem?.label || '额度窗口')}</div>
+                        <div class="quota-window-value">${remainingPercent.toFixed(remainingPercent % 1 === 0 ? 0 : 1)}%</div>
+                    </div>
+                    <div class="quota-progress">
+                        <div class="quota-progress-bar" style="width: ${remainingPercent}%;"></div>
+                    </div>
+                    <div class="quota-window-meta">
+                        <div>剩余额度：${remainingPercent.toFixed(remainingPercent % 1 === 0 ? 0 : 1)}%</div>
+                        <div>${escapeHtml(statusText)}</div>
+                        <div>重置时间：${escapeHtml(resetAt)}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const reachedType = quota?.rate_limit_reached_type?.type;
+        const credits = quota?.credits || {};
+        const creditsText = credits?.unlimited
+            ? 'Credits：不限量'
+            : typeof credits?.balance === 'number'
+                ? `Credits：${credits.balance}`
+                : '';
+        const extraNotes = [
+            reachedType ? `限制原因：<strong>${escapeHtml(formatQuotaReason(reachedType))}</strong>` : '',
+            creditsText ? escapeHtml(creditsText) : '',
+            `最近刷新：<strong>${escapeHtml(formatQuotaDateTime(quota?.fetched_at))}</strong>`,
+        ].filter(Boolean).join('　');
+
+        body.innerHTML = `
+            <div class="longterm-team-quota-grid">${windowHtml}</div>
+            <div class="quota-note">${extraNotes}</div>
+        `;
+    }
+
+    async function refreshTeamQuota(teamId, options = {}) {
+        const { silent = false, auto = false } = options;
+        const body = getQuotaBody(teamId);
+        if (!body) return;
+
+        const button = getQuotaRefreshButton(teamId);
+        if (button?.disabled) return;
+
+        renderQuotaLoading(teamId, auto ? '正在自动拉取额度...' : '正在刷新额度...');
+        setQuotaButtonLoading(teamId, true);
+
+        try {
+            const response = await fetch(`/admin/teams/${teamId}/quota`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok || !result?.success) {
+                const errorMessage = result?.error || '额度加载失败，请稍后重试';
+                renderQuotaError(teamId, errorMessage);
+                if (!silent) {
+                    showToast(errorMessage, 'error');
+                }
+                return;
+            }
+
+            renderQuotaSuccess(teamId, result.quota || {});
+            if (!silent) {
+                showToast('额度已刷新', 'success');
+            }
+        } catch (error) {
+            const errorMessage = auto ? '自动拉取额度失败，点击刷新后重试' : '额度请求失败，请检查网络或代理配置';
+            renderQuotaError(teamId, errorMessage);
+            if (!silent) {
+                showToast(errorMessage, 'error');
+            }
+        } finally {
+            setQuotaButtonLoading(teamId, false);
+        }
+    }
+
+    async function preloadTeamQuotas() {
+        const buttons = Array.from(document.querySelectorAll('.btn-refresh-quota'));
+        if (!buttons.length) return;
+
+        const concurrency = Math.min(3, buttons.length);
+        let nextIndex = 0;
+
+        async function worker() {
+            while (nextIndex < buttons.length) {
+                const currentIndex = nextIndex;
+                nextIndex += 1;
+                const teamId = buttons[currentIndex].getAttribute('data-id');
+                if (!teamId) continue;
+                await refreshTeamQuota(teamId, { silent: true, auto: true });
+            }
+        }
+
+        await Promise.all(Array.from({ length: concurrency }, () => worker()));
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1135,6 +1864,13 @@
             });
         });
 
+        document.querySelectorAll('.btn-refresh-quota').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                refreshTeamQuota(id);
+            });
+        });
+
         // 绑定编辑按钮
         document.querySelectorAll('.btn-edit-team').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1174,6 +1910,10 @@
         document.getElementById('btnBatchDelete')?.addEventListener('click', handleBatchDelete);
         document.getElementById('btnBatchTransferPool')?.addEventListener('click', handleBatchTransferPool);
         document.getElementById('btnClearExperienceQueue')?.addEventListener('click', handleClearExperienceQueue);
+
+        if (document.querySelector('.longterm-team-grid')) {
+            preloadTeamQuotas();
+        }
     });
 
     async function handleClearExperienceQueue() {

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/user.css?v=20260328-ui-polish-1">
+    <link rel="stylesheet" href="/static/css/user.css?v=20260427-white-home-1">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
@@ -38,9 +38,26 @@
                     体验位剩余 <span class="seats-count">{{ welfare_remaining_spots }}</span> 位
                 </div>
                 {% endif %}
-                <div class="info-box" style="margin-top:14px; justify-content:center;">
+                <div class="info-box hero-info-box">
                     <i data-lucide="rocket" class="info-icon"></i>
-                    <p>需要 10 分钟自动移出的体验模式？<a href="/free" style="color:#93c5fd; text-decoration:underline;">点这里进入体验组队</a></p>
+                    <p>需要 10 分钟自动移出的体验模式？<a href="/free">点这里进入体验组队</a></p>
+                </div>
+                <div class="hero-feature-grid" aria-label="服务能力">
+                    <div class="hero-feature-card">
+                        <span>01</span>
+                        <strong>自动分配 Team</strong>
+                        <p>兑换后按可用席位自动进入队列。</p>
+                    </div>
+                    <div class="hero-feature-card">
+                        <span>02</span>
+                        <strong>质保可查询</strong>
+                        <p>异常状态可用原兑换码自助核验。</p>
+                    </div>
+                    <div class="hero-feature-card">
+                        <span>03</span>
+                        <strong>席位实时展示</strong>
+                        <p>常规与体验剩余名额清晰可见。</p>
+                    </div>
                 </div>
             </header>
 

@@ -1,4 +1,4 @@
-/* White Minimalist & Dynamic Design System */
+/* Refined Admin Design System */
 :root {
     /* Colors */
     --primary: #6366f1;
@@ -74,37 +74,39 @@ body {
 }
 
 
-/* Admin dark style (inspired by redeem page) */
 body.admin-theme {
-    --primary: #4f8ef7;
-    --primary-hover: #3d7fe9;
-    --primary-soft: rgba(79, 142, 247, 0.16);
-    --bg-main: #060c1f;
-    --bg-surface: rgba(10, 20, 45, 0.86);
-    --text-main: #e8edf7;
-    --text-muted: #95a6bf;
-    --text-dim: #6f8098;
-    --border-base: rgba(148, 163, 184, 0.24);
+    --primary: #18c7ad;
+    --primary-hover: #2dd4bf;
+    --primary-soft: rgba(24, 199, 173, 0.14);
+    --bg-main: #0a0d12;
+    --bg-surface: rgba(16, 22, 31, 0.86);
+    --text-main: #f6f1df;
+    --text-muted: #aeb7c2;
+    --text-dim: #707987;
+    --border-base: rgba(222, 185, 94, 0.18);
     --success-soft: rgba(16, 185, 129, 0.18);
     --warning-soft: rgba(245, 158, 11, 0.18);
     --danger-soft: rgba(239, 68, 68, 0.18);
-    --grid-color: rgba(79, 142, 247, 0.04);
-    --menu-active-start: rgba(79, 142, 247, 0.28);
-    --menu-active-end: rgba(123, 94, 167, 0.28);
-    --button-gradient-start: #4f8ef7;
-    --button-gradient-end: #7b5ea7;
-    --button-gradient-start-hover: #5896fb;
-    --button-gradient-end-hover: #8667b5;
-    --menu-active-text: #eaf1ff;
-    --menu-active-shadow: rgba(79, 142, 247, 0.35);
-    --menu-hover-bg: rgba(79, 142, 247, 0.12);
-    --status-banned-text: #cbd5e1;
-    --toast-bg: rgba(10, 20, 45, 0.92);
-    --toast-border: rgba(148, 163, 184, 0.3);
-    --focus-ring: rgba(79, 142, 247, 0.34);
-    --surface-elev-1: color-mix(in srgb, var(--bg-surface) 94%, #1b2f5d 6%);
-    --table-row-hover: rgba(79, 142, 247, 0.13);
-    background: radial-gradient(130% 120% at 0% 0%, #111b3a 0%, #060c1f 52%, #040714 100%);
+    --grid-color: rgba(214, 179, 92, 0.045);
+    --menu-active-start: rgba(24, 199, 173, 0.22);
+    --menu-active-end: rgba(214, 179, 92, 0.18);
+    --button-gradient-start: #18c7ad;
+    --button-gradient-end: #d6b35c;
+    --button-gradient-start-hover: #2dd4bf;
+    --button-gradient-end-hover: #f0c96d;
+    --menu-active-text: #fff7df;
+    --menu-active-shadow: rgba(214, 179, 92, 0.24);
+    --menu-hover-bg: rgba(255, 255, 255, 0.055);
+    --status-banned-text: #b7b2a7;
+    --toast-bg: rgba(15, 20, 28, 0.94);
+    --toast-border: rgba(214, 179, 92, 0.24);
+    --focus-ring: rgba(214, 179, 92, 0.28);
+    --surface-elev-1: rgba(16, 22, 31, 0.74);
+    --table-row-hover: rgba(24, 199, 173, 0.08);
+    background:
+        linear-gradient(112deg, rgba(214, 179, 92, 0.12) 0%, transparent 28%),
+        linear-gradient(248deg, rgba(24, 199, 173, 0.12) 0%, transparent 30%),
+        linear-gradient(135deg, #07090d 0%, #0d1118 42%, #080a0f 100%);
     color: var(--text-main);
 }
 
@@ -151,7 +153,7 @@ body.admin-theme::before {
         linear-gradient(var(--grid-color) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
     background-size: 48px 48px;
-    mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.72), transparent 90%);
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.78), transparent 92%);
     z-index: 0;
 }
 
@@ -306,7 +308,7 @@ body.admin-theme .toast {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-main);
-    letter-spacing: -0.025em;
+    letter-spacing: 0;
 }
 
 .main-container {
@@ -1524,7 +1526,7 @@ body.admin-theme .toast {
     text-align: center;
     margin-bottom: 2rem;
     font-weight: 800;
-    letter-spacing: -0.025em;
+    letter-spacing: 0;
 }
 
 /* Utilities */
@@ -2169,6 +2171,353 @@ html.theme-warm body.admin-theme .dropdown-menu {
     body.admin-theme .content-section {
         margin-bottom: 1.25rem;
     }
+}
+
+/* Luxury console skin */
+body.admin-theme {
+    background:
+        linear-gradient(118deg, rgba(214, 179, 92, 0.12) 0%, transparent 26%),
+        linear-gradient(242deg, rgba(24, 199, 173, 0.12) 0%, transparent 28%),
+        linear-gradient(180deg, #07090d 0%, #0d1118 46%, #080a0f 100%);
+}
+
+body.admin-theme::before {
+    background-image:
+        linear-gradient(rgba(214, 179, 92, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 199, 173, 0.035) 1px, transparent 1px),
+        linear-gradient(120deg, transparent 0%, transparent 46%, rgba(214, 179, 92, 0.055) 50%, transparent 54%, transparent 100%);
+    background-size: 56px 56px, 56px 56px, 100% 100%;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 92%);
+}
+
+body.admin-theme .navbar {
+    background:
+        linear-gradient(90deg, rgba(14, 18, 26, 0.96) 0%, rgba(18, 26, 34, 0.9) 100%);
+    border-bottom: 1px solid rgba(214, 179, 92, 0.22);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+}
+
+body.admin-theme .navbar-container {
+    max-width: none;
+    padding: 0 1.5rem;
+}
+
+body.admin-theme .navbar-brand h1 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    color: #fff7df;
+}
+
+body.admin-theme .navbar-brand h1::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 0.55rem;
+    border-radius: 2px;
+    background: linear-gradient(135deg, #18c7ad, #d6b35c);
+    box-shadow: 0 0 18px rgba(24, 199, 173, 0.5);
+}
+
+body.admin-theme .navbar-user {
+    color: #d8d1bd;
+}
+
+body.admin-theme .main-container {
+    max-width: none;
+}
+
+body.admin-theme .main-content {
+    background: transparent;
+}
+
+body.admin-theme .sidebar {
+    background:
+        linear-gradient(180deg, rgba(16, 22, 31, 0.92) 0%, rgba(9, 12, 18, 0.9) 100%);
+    border-right: 1px solid rgba(214, 179, 92, 0.18);
+    box-shadow: 18px 0 36px rgba(0, 0, 0, 0.22);
+}
+
+body.admin-theme .menu-item a {
+    border-radius: 8px;
+    color: #b7c1cd;
+}
+
+body.admin-theme .menu-icon {
+    color: #d6b35c;
+}
+
+body.admin-theme .menu-item.active a {
+    background:
+        linear-gradient(135deg, rgba(24, 199, 173, 0.18), rgba(214, 179, 92, 0.16));
+    border: 1px solid rgba(214, 179, 92, 0.24);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+body.admin-theme .page-header h2 {
+    color: #fff7df;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+body.admin-theme .content-section,
+body.admin-theme .table-container,
+body.admin-theme .card,
+body.admin-theme .modal,
+body.admin-theme .dropdown-menu {
+    background:
+        linear-gradient(180deg, rgba(18, 24, 34, 0.86), rgba(12, 16, 24, 0.82));
+    border: 1px solid rgba(214, 179, 92, 0.18);
+    border-radius: 10px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(18px);
+}
+
+body.admin-theme .content-section {
+    padding: 1.25rem;
+}
+
+body.admin-theme .stat-card {
+    background:
+        linear-gradient(135deg, rgba(21, 29, 40, 0.88), rgba(12, 16, 24, 0.82));
+    border: 1px solid rgba(214, 179, 92, 0.18);
+    border-radius: 10px;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.2);
+}
+
+body.admin-theme .stat-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(214, 179, 92, 0.32);
+}
+
+body.admin-theme .stat-icon {
+    background:
+        linear-gradient(135deg, rgba(24, 199, 173, 0.18), rgba(214, 179, 92, 0.16));
+    color: #f0c96d;
+    border: 1px solid rgba(214, 179, 92, 0.2);
+    border-radius: 8px;
+}
+
+body.admin-theme .stat-value {
+    color: #fff7df;
+    letter-spacing: 0;
+}
+
+body.admin-theme .stat-label,
+body.admin-theme .section-header h3 {
+    color: #b9c1cb;
+}
+
+body.admin-theme .btn {
+    border-radius: 8px;
+}
+
+body.admin-theme .btn-primary {
+    color: #06100f;
+    font-weight: 800;
+    background: linear-gradient(135deg, #18c7ad 0%, #d6b35c 100%);
+    box-shadow: 0 10px 26px rgba(24, 199, 173, 0.16);
+}
+
+body.admin-theme .btn-primary:hover {
+    background: linear-gradient(135deg, #2dd4bf 0%, #f0c96d 100%);
+    box-shadow: 0 14px 32px rgba(214, 179, 92, 0.18);
+}
+
+body.admin-theme .btn-secondary,
+body.admin-theme .input-group-clean,
+body.admin-theme .form-control,
+body.admin-theme .form-control-sm {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(214, 179, 92, 0.18);
+    color: var(--text-main);
+}
+
+body.admin-theme .btn-secondary:hover,
+body.admin-theme .form-control:focus,
+body.admin-theme .form-control-sm:focus {
+    border-color: rgba(214, 179, 92, 0.38);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+body.admin-theme .data-table th {
+    background: rgba(12, 16, 24, 0.96);
+    color: #d8d1bd;
+    letter-spacing: 0;
+}
+
+body.admin-theme .data-table td {
+    border-bottom-color: rgba(214, 179, 92, 0.1);
+}
+
+body.admin-theme .status-badge {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.admin-theme .footer {
+    background: rgba(8, 10, 15, 0.9);
+    border-top: 1px solid rgba(214, 179, 92, 0.16);
+}
+
+/* Warm theme is now a clean white theme for readability. */
+body.admin-theme.theme-warm,
+html.theme-warm body.admin-theme {
+    --primary: #0f766e;
+    --primary-hover: #0d9488;
+    --primary-soft: #e6f7f5;
+    --bg-main: #f6f8fb;
+    --bg-surface: #ffffff;
+    --text-main: #111827;
+    --text-muted: #526071;
+    --text-dim: #7b8796;
+    --border-base: #d9e2ec;
+    --border-focus: #0f766e;
+    --success-soft: #ecfdf5;
+    --warning-soft: #fff7e6;
+    --danger-soft: #fff1f2;
+    --grid-color: rgba(15, 118, 110, 0.055);
+    --menu-active-start: #e6f7f5;
+    --menu-active-end: #fff7e6;
+    --button-gradient-start: #0f766e;
+    --button-gradient-end: #d6a94f;
+    --button-gradient-start-hover: #0d9488;
+    --button-gradient-end-hover: #e3bb63;
+    --menu-active-text: #0f3f3b;
+    --menu-active-shadow: rgba(15, 118, 110, 0.18);
+    --menu-hover-bg: rgba(15, 118, 110, 0.07);
+    --status-banned-text: #64748b;
+    --toast-bg: #ffffff;
+    --toast-border: #d9e2ec;
+    --focus-ring: rgba(15, 118, 110, 0.22);
+    --surface-elev-1: #ffffff;
+    --table-row-hover: #f0fdfa;
+    background:
+        linear-gradient(118deg, rgba(15, 118, 110, 0.08) 0%, transparent 30%),
+        linear-gradient(242deg, rgba(214, 169, 79, 0.1) 0%, transparent 32%),
+        linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
+    color: var(--text-main);
+}
+
+body.admin-theme.theme-warm::before,
+html.theme-warm body.admin-theme::before {
+    background-image:
+        linear-gradient(rgba(15, 118, 110, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(214, 169, 79, 0.045) 1px, transparent 1px);
+}
+
+body.admin-theme.theme-warm .navbar,
+html.theme-warm body.admin-theme .navbar {
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom-color: #d9e2ec;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
+body.admin-theme.theme-warm .navbar-brand h1,
+html.theme-warm body.admin-theme .navbar-brand h1,
+body.admin-theme.theme-warm .page-header h2,
+html.theme-warm body.admin-theme .page-header h2,
+body.admin-theme.theme-warm .stat-value,
+html.theme-warm body.admin-theme .stat-value {
+    color: #111827;
+}
+
+body.admin-theme.theme-warm .navbar-user,
+html.theme-warm body.admin-theme .navbar-user,
+body.admin-theme.theme-warm .section-header h3,
+html.theme-warm body.admin-theme .section-header h3,
+body.admin-theme.theme-warm .stat-label,
+html.theme-warm body.admin-theme .stat-label {
+    color: #526071;
+}
+
+body.admin-theme.theme-warm .sidebar,
+html.theme-warm body.admin-theme .sidebar {
+    background: rgba(255, 255, 255, 0.9);
+    border-right-color: #d9e2ec;
+    box-shadow: 18px 0 36px rgba(15, 23, 42, 0.06);
+}
+
+body.admin-theme.theme-warm .menu-item a,
+html.theme-warm body.admin-theme .menu-item a {
+    color: #526071;
+}
+
+body.admin-theme.theme-warm .menu-icon,
+html.theme-warm body.admin-theme .menu-icon {
+    color: #0f766e;
+}
+
+body.admin-theme.theme-warm .menu-item.active a,
+html.theme-warm body.admin-theme .menu-item.active a {
+    background: linear-gradient(135deg, #e6f7f5, #fff7e6);
+    border-color: rgba(15, 118, 110, 0.18);
+    color: #0f3f3b;
+    box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.08);
+}
+
+body.admin-theme.theme-warm .content-section,
+html.theme-warm body.admin-theme .content-section,
+body.admin-theme.theme-warm .table-container,
+html.theme-warm body.admin-theme .table-container,
+body.admin-theme.theme-warm .card,
+html.theme-warm body.admin-theme .card,
+body.admin-theme.theme-warm .modal,
+html.theme-warm body.admin-theme .modal,
+body.admin-theme.theme-warm .dropdown-menu,
+html.theme-warm body.admin-theme .dropdown-menu,
+body.admin-theme.theme-warm .stat-card,
+html.theme-warm body.admin-theme .stat-card {
+    background: rgba(255, 255, 255, 0.94);
+    border-color: #d9e2ec;
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+body.admin-theme.theme-warm .stat-icon,
+html.theme-warm body.admin-theme .stat-icon {
+    background: linear-gradient(135deg, #e6f7f5, #fff7e6);
+    border-color: rgba(15, 118, 110, 0.14);
+    color: #0f766e;
+}
+
+body.admin-theme.theme-warm .btn-secondary,
+html.theme-warm body.admin-theme .btn-secondary,
+body.admin-theme.theme-warm .input-group-clean,
+html.theme-warm body.admin-theme .input-group-clean,
+body.admin-theme.theme-warm .form-control,
+html.theme-warm body.admin-theme .form-control,
+body.admin-theme.theme-warm .form-control-sm,
+html.theme-warm body.admin-theme .form-control-sm {
+    background: #ffffff;
+    border-color: #d9e2ec;
+    color: #111827;
+}
+
+body.admin-theme.theme-warm .btn-secondary:hover,
+html.theme-warm body.admin-theme .btn-secondary:hover,
+body.admin-theme.theme-warm .form-control:focus,
+html.theme-warm body.admin-theme .form-control:focus,
+body.admin-theme.theme-warm .form-control-sm:focus,
+html.theme-warm body.admin-theme .form-control-sm:focus {
+    background: #f8fafc;
+    border-color: rgba(15, 118, 110, 0.35);
+}
+
+body.admin-theme.theme-warm .data-table th,
+html.theme-warm body.admin-theme .data-table th {
+    background: #f8fafc;
+    color: #526071;
+}
+
+body.admin-theme.theme-warm .data-table td,
+html.theme-warm body.admin-theme .data-table td {
+    border-bottom-color: #e5edf4;
+}
+
+body.admin-theme.theme-warm .footer,
+html.theme-warm body.admin-theme .footer {
+    background: rgba(255, 255, 255, 0.94);
+    border-top-color: #d9e2ec;
 }
 
 :where(
