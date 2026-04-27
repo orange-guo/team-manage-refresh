@@ -463,6 +463,8 @@
                 <th>成员数</th>
                 <th>订阅计划</th>
                 <th>到期时间</th>
+                <th>已添加时长</th>
+                <th>剩余时长</th>
                 <th>设备验证</th>
                 <th>状态</th>
                 <th>操作</th>
@@ -493,6 +495,16 @@
                     {{ team.expires_at|format_datetime }}
                     {% else %}
                     -
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="text-muted js-relative-time" data-time="{{ team.created_at or '' }}" data-mode="elapsed">-</span>
+                </td>
+                <td>
+                    {% if team.expires_at %}
+                    <span class="text-muted js-relative-time" data-time="{{ team.expires_at }}" data-mode="remaining">-</span>
+                    {% else %}
+                    <span class="text-muted">长期</span>
                     {% endif %}
                 </td>
                 <td>
@@ -755,6 +767,72 @@
 
 {% block extra_js %}
 <script>
+    function parseRelativeTimeValue(value) {
+        if (!value) return null;
+        const first = new Date(value);
+        if (!Number.isNaN(first.getTime())) return first;
+
+        const fallback = new Date(String(value).replace(' ', 'T'));
+        if (!Number.isNaN(fallback.getTime())) return fallback;
+
+        return null;
+    }
+
+    function formatRelativeDuration(seconds) {
+        const safe = Math.max(0, Math.floor(Number(seconds) || 0));
+        const days = Math.floor(safe / 86400);
+        const hours = Math.floor((safe % 86400) / 3600);
+        const minutes = Math.floor((safe % 3600) / 60);
+
+        if (days > 0) {
+            return `${days}天 ${hours}小时`;
+        }
+        if (hours > 0) {
+            return `${hours}小时 ${minutes}分钟`;
+        }
+        if (minutes > 0) {
+            return `${minutes}分钟`;
+        }
+        return '不到1分钟';
+    }
+
+    function renderRelativeTimes() {
+        const now = new Date();
+        document.querySelectorAll('.js-relative-time').forEach((node) => {
+            const timeRaw = node.getAttribute('data-time') || '';
+            const mode = (node.getAttribute('data-mode') || '').trim();
+            const target = parseRelativeTimeValue(timeRaw);
+
+            if (!target) {
+                node.textContent = '-';
+                return;
+            }
+
+            node.title = formatDateTime(timeRaw);
+
+            if (mode === 'remaining') {
+                const diffSeconds = Math.floor((target.getTime() - now.getTime()) / 1000);
+                if (diffSeconds <= 0) {
+                    node.textContent = '已到期';
+                    node.classList.remove('text-muted');
+                    node.classList.add('text-danger');
+                } else {
+                    node.textContent = formatRelativeDuration(diffSeconds);
+                    node.classList.remove('text-danger');
+                    node.classList.add('text-muted');
+                }
+                return;
+            }
+
+            const elapsedSeconds = Math.floor((now.getTime() - target.getTime()) / 1000);
+            if (elapsedSeconds < 0) {
+                node.textContent = '-';
+                return;
+            }
+            node.textContent = formatRelativeDuration(elapsedSeconds);
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const editTeamModal = document.getElementById('editTeamModal');
         if (editTeamModal && editTeamModal.parentElement !== document.body) {
@@ -768,6 +846,10 @@
 
         // Init Column Toggler
         initColumnToggler('.data-table', 'team_list_columns');
+
+        // 渲染时长列并每分钟刷新
+        renderRelativeTimes();
+        window.setInterval(renderRelativeTimes, 60 * 1000);
 
         // 绑定下拉按钮点击（避免仅依赖内联 onclick）
         const statusFilterToggleBtn = document.getElementById('statusFilterToggleBtn');
