@@ -29,7 +29,7 @@ class NotificationService:
                     return False
 
                 threshold_str = await settings_service.get_setting(db_session, "low_stock_threshold", "10")
-                api_key = await settings_service.get_setting(db_session, "api_key")
+                webhook_secret = await settings_service.get_setting(db_session, "webhook_secret")
 
                 try:
                     threshold = int(threshold_str)
@@ -43,8 +43,8 @@ class NotificationService:
 
                 # 仅根据可用车位触发补货
                 if available_seats <= threshold:
-                    logger.info(f"检测到车位不足，触发补货预警! Webhook URL: {webhook_url}")
-                    return await self.send_webhook_notification(webhook_url, available_seats, threshold, api_key)
+                    logger.info("检测到车位不足，触发补货预警，Webhook 已配置")
+                    return await self.send_webhook_notification(webhook_url, available_seats, threshold, webhook_secret)
                 
                 return False
 
@@ -52,7 +52,7 @@ class NotificationService:
                 logger.error(f"检查库存并通知过程发生错误: {e}")
                 return False
 
-    async def send_webhook_notification(self, url: str, available_seats: int, threshold: int, api_key: Optional[str] = None) -> bool:
+    async def send_webhook_notification(self, url: str, available_seats: int, threshold: int, webhook_secret: Optional[str] = None) -> bool:
         """
         发送 Webhook 通知
         """
@@ -65,13 +65,13 @@ class NotificationService:
             }
             
             headers = {}
-            if api_key:
-                headers["X-API-Key"] = api_key
+            if webhook_secret:
+                headers["X-Webhook-Secret"] = webhook_secret
                 
             async with httpx.AsyncClient(timeout=10.0) as client:
                 response = await client.post(url, json=payload, headers=headers)
                 response.raise_for_status()
-                logger.info(f"Webhook 通知发送成功: {url}")
+                logger.info("Webhook 通知发送成功")
                 return True
         except Exception as e:
             logger.error(f"发送 Webhook 通知失败: {e}")

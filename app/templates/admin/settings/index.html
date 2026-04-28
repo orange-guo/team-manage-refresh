@@ -280,7 +280,14 @@
             <label for="apiKey">API Key (用于补货对接)</label>
             <input type="text" id="apiKey" name="api_key" value="{{ api_key or '' }}"
                 placeholder="用于外部程序调用的密钥 (X-API-Key)" class="form-control">
-            <p class="form-help">设置后,第三方程序可以通过 Header `X-API-Key` 认证管理员接口</p>
+            <p class="form-help">管理员接口密钥。第三方程序可通过 Header `X-API-Key` 调用受保护接口，请勿发送给 Webhook 接收方。</p>
+        </div>
+
+        <div class="form-group">
+            <label for="webhookSecret">Webhook Secret (外发通知密钥)</label>
+            <input type="text" id="webhookSecret" name="webhook_secret" value="{{ webhook_secret or '' }}"
+                placeholder="仅随 Webhook 发送，Header: X-Webhook-Secret" class="form-control">
+            <p class="form-help">库存预警通知会把此值放入 `X-Webhook-Secret`，不会再外发管理员 API Key。</p>
         </div>
 
         <button type="submit" class="btn btn-primary">保存配置</button>
@@ -674,6 +681,7 @@
         const webhook_url = document.getElementById('webhookUrl').value.trim();
         const low_stock_threshold = parseInt(document.getElementById('lowStockThreshold').value);
         const api_key = document.getElementById('apiKey').value.trim();
+        const webhook_secret = document.getElementById('webhookSecret').value.trim();
 
         if (isNaN(low_stock_threshold) || low_stock_threshold < 0) {
             showToast('请输入有效的库存阈值', 'error');
@@ -686,7 +694,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ webhook_url, low_stock_threshold, api_key })
+                body: JSON.stringify({ webhook_url, low_stock_threshold, api_key, webhook_secret })
             });
 
             const data = await response.json();

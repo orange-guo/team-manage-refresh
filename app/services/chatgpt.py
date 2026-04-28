@@ -73,7 +73,7 @@ class ChatGPTService:
                     proxy_port,
                 )
             except Exception:
-                logger.info("创建 ChatGPT 会话代理: %s", normalized_proxy)
+                logger.info("创建 ChatGPT 会话代理: 已启用（地址解析失败，隐藏完整代理串）")
         else:
             logger.info("创建 ChatGPT 会话代理: disabled")
 

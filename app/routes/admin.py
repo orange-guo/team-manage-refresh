@@ -2053,6 +2053,7 @@ async def settings_page(
                 "log_level": log_level,
                 "webhook_url": await settings_service.get_setting(db, "webhook_url", ""),
                 "low_stock_threshold": await settings_service.get_setting(db, "low_stock_threshold", "10"),
+                "webhook_secret": await settings_service.get_setting(db, "webhook_secret", ""),
                 "api_key": await settings_service.get_setting(db, "api_key", ""),
                 "token_refresh_interval_minutes": await settings_service.get_setting(db, "token_refresh_interval_minutes", "30"),
                 "token_refresh_window_hours": await settings_service.get_setting(db, "token_refresh_window_hours", "2"),
@@ -2091,7 +2092,8 @@ class WebhookSettingsRequest(BaseModel):
     """Webhook 设置请求"""
     webhook_url: str = Field("", description="Webhook URL")
     low_stock_threshold: int = Field(10, description="库存阈值")
-    api_key: str = Field("", description="API Key")
+    webhook_secret: str = Field("", description="Webhook 外发密钥")
+    api_key: str = Field("", description="管理员 API Key")
 
 
 class TokenRefreshSettingsRequest(BaseModel):
@@ -2360,11 +2362,26 @@ async def update_webhook_settings(
     try:
         from app.services.settings import settings_service
 
-        logger.info(f"管理员更新 Webhook/API 配置: url={webhook_data.webhook_url}, threshold={webhook_data.low_stock_threshold}")
+        webhook_url = webhook_data.webhook_url.strip()
+        logger.info(
+            "管理员更新 Webhook/API 配置: webhook_configured=%s, threshold=%s",
+            bool(webhook_url),
+            webhook_data.low_stock_threshold,
+        )
+        if webhook_url:
+            from urllib.parse import urlparse
+
+            parsed = urlparse(webhook_url)
+            if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+                return JSONResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    content={"success": False, "error": "Webhook URL 仅支持 http:// 或 https:// 地址"}
+                )
 
         settings = {
-            "webhook_url": webhook_data.webhook_url.strip(),
+            "webhook_url": webhook_url,
             "low_stock_threshold": str(webhook_data.low_stock_threshold),
+            "webhook_secret": webhook_data.webhook_secret.strip(),
             "api_key": webhook_data.api_key.strip()
         }
 

@@ -54,6 +54,44 @@ MAX_PERIODIC_TEAM_SYNC_DAYS = 30
 EXPERIENCE_AUTO_REMOVE_INTERVAL_SECONDS = 30
 EXPERIENCE_AUTO_REMOVE_BATCH_SIZE = 50
 
+INSECURE_SECRET_KEYS = {
+    "",
+    "your-secret-key-here-change-in-production",
+    "replace-with-at-least-32-random-chars",
+    "change-me",
+    "changeme",
+    "secret",
+}
+INSECURE_ADMIN_PASSWORDS = {"", "admin", "admin123", "password", "change-this-before-deploy"}
+
+
+def validate_security_config() -> None:
+    """Reject unsafe defaults outside local debug mode."""
+    issues = []
+    warnings = []
+
+    secret_key = str(settings.secret_key or "").strip()
+    admin_password = str(settings.admin_password or "")
+
+    if secret_key.lower() in INSECURE_SECRET_KEYS:
+        issues.append("SECRET_KEY is still the default/weak value")
+    elif len(secret_key) < 32:
+        warnings.append("SECRET_KEY should be at least 32 random characters")
+
+    if admin_password in INSECURE_ADMIN_PASSWORDS:
+        issues.append("ADMIN_PASSWORD is still the default/weak value")
+
+    if settings.debug:
+        for item in issues + warnings:
+            logger.warning("安全配置警告（DEBUG=True 时仅告警）: %s", item)
+        return
+
+    if issues:
+        raise RuntimeError("生产配置不安全: " + "; ".join(issues))
+
+    for item in warnings:
+        logger.warning("安全配置警告: %s", item)
+
 
 def _safe_int(value, default):
     try:
@@ -255,6 +293,8 @@ async def lifespan(app: FastAPI):
     """
     logger.info("系统正在启动，正在初始化数据库...")
     try:
+        validate_security_config()
+
         # 0. 确保数据库目录存在
         db_file = settings.database_url.split("///")[-1]
         Path(db_file).parent.mkdir(parents=True, exist_ok=True)
@@ -340,8 +380,18 @@ app.add_middleware(
     session_cookie="session",
     max_age=14 * 24 * 60 * 60,  # 14 天
     same_site="lax",
-    https_only=False  # 开发环境设为 False，生产环境应设为 True
+    https_only=not settings.debug
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "same-origin")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    return response
 
 # 配置静态文件
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")

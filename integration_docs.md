@@ -9,6 +9,7 @@
 ### 请求信息
 - **方法**: `POST`
 - **Content-Type**: `application/json`
+- **可选认证头**: 如果后台配置了 Webhook Secret，系统会发送 `X-Webhook-Secret`；不要把管理员 `X-API-Key` 配给 Webhook 接收方。
 
 ### 请求 Payload 示例
 ```json
@@ -32,7 +33,7 @@
 - **认证方式**:
   1. **Session 认证**: 浏览器访问时自动使用。
   2. **API Key 认证**: 对接程序建议使用此方式。在 `Header` 中添加 `X-API-Key`。
-- **配置位置**: 管理员后台 -> 系统设置 -> 库存预警 Webhook -> API Key。
+- **配置位置**: 管理员后台 -> 系统设置 -> 库存预警 -> API Key。该 Key 是管理员接口密钥，不会随库存预警 Webhook 外发。
 
 ### 导入模式 A：单账号导入 (Single)
 适用于逐个导入账号。

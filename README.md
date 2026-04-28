@@ -187,14 +187,14 @@ APP_NAME=GPT Team 管理系统
 APP_VERSION=0.1.0
 APP_HOST=0.0.0.0
 APP_PORT=8008
-DEBUG=True
+DEBUG=False
 
 # 数据库配置（默认使用 SQLite）
 DATABASE_URL=sqlite+aiosqlite:///team_manage.db
 
 # 安全配置（生产环境请修改）
-SECRET_KEY=your-secret-key-here-change-in-production
-ADMIN_PASSWORD=admin123
+SECRET_KEY=replace-with-at-least-32-random-chars
+ADMIN_PASSWORD=change-this-before-deploy
 
 # 日志配置
 LOG_LEVEL=INFO
@@ -230,9 +230,9 @@ python -m app.main
 - **管理员控制台**: http://localhost:8008/admin
 - **福利车位管理页面**: http://localhost:8008/admin/welfare
 
-**默认管理员账号**:
+**管理员账号**:
 - 用户名: `admin`
-- 密码: `admin123`（请在首次登录后修改）
+- 密码: 使用 `.env` 中的 `ADMIN_PASSWORD` 初始化；生产环境必须改成强密码
 
 ---
 
@@ -340,9 +340,9 @@ team-manage/
 
 **生产环境部署前，请务必修改以下配置**：
 
-1. `SECRET_KEY`: 用于 Session 签名，请使用随机字符串
-2. `ADMIN_PASSWORD`: 管理员初始密码，首次登录后请立即修改
-3. `DEBUG`: 生产环境请设置为 `False`
+1. `SECRET_KEY`: 用于 Session 签名和 Token 加密派生，请使用至少 32 位随机字符串
+2. `ADMIN_PASSWORD`: 管理员初始密码，生产环境不能使用默认值
+3. `DEBUG`: 生产环境请设置为 `False`，否则 Session Cookie 不会强制 `Secure`
 
 ## 📖 使用指南
 
@@ -350,7 +350,7 @@ team-manage/
 
 1. **登录管理员面板**
    - 访问 http://localhost:8008/login
-   - 使用默认账号登录（admin/admin123）
+   - 使用用户名 `admin` 和 `.env` 中配置的 `ADMIN_PASSWORD` 登录
    - 首次登录后建议修改密码
 
 2. **导入 Team 账号**

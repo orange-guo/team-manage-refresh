@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
@@ -19,7 +20,9 @@ AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=F
 async def _run_webhook_check():
     async with AsyncSessionLocal() as db:
         # 1. 设置 Webhook URL
-        test_url = "https://webhook.site/placeholder"
+        test_url = os.getenv("TEST_WEBHOOK_URL", "").strip()
+        if not test_url:
+            raise RuntimeError("请先设置 TEST_WEBHOOK_URL，避免误把生产 Webhook 指向第三方测试站点")
         await settings_service.update_settings(db, {
             "webhook_url": test_url,
             "low_stock_threshold": "100"  # 设高一点确保触发
